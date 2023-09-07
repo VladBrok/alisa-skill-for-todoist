@@ -1,11 +1,11 @@
-import { TodoistApi } from "@doist/todoist-api-typescript";
+// import { TodoistApi } from "@doist/todoist-api-typescript";
 import dotenv from "dotenv";
 dotenv.config();
 
 // const apiToken = process.env["TODOIST_TOKEN"];
 
 // if (!apiToken) {
-//   throw new Error("TODOIST_TOKEN was not provided"); 
+//   throw new Error("TODOIST_TOKEN was not provided");
 // }
 
 // const api = new TodoistApi(apiToken);
