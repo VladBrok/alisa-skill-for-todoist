@@ -21,7 +21,7 @@ dotenv.config();
 export default function handler(req: any, res: any) {
   console.log("THE REQUEST:", req);
   // Из запроса извлекаются свойства request, session и version.
-  const { request, session, version } = req;
+  const { request, session, version } = req.body;
 
   // В тело ответа вставляются свойства version и session из запроса.
   // Подробнее о формате запроса и ответа — в разделе Протокол работы навыка.
