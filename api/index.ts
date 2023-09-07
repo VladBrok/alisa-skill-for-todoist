@@ -38,7 +38,7 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
       end_session: false,
 
       // @ts-ignore
-      start_account_linking,
+      start_account_linking: {},
     },
   };
 
