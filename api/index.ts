@@ -19,16 +19,35 @@ dotenv.config();
 
 // TODO: extract business logic
 export default function handler(req: VercelRequest, res: VercelResponse) {
-  // if (!authorized) {
-  //   authorize;
-  // }
+  const body = req.body as ReqBody;
+  const { request, version } = body;
 
-  const { request, version } = req.body as ReqBody;
+  const supportsAuth = Boolean(body.meta.interfaces.account_linking);
+  if (!supportsAuth) {
+    const response: ResBody = {
+      version,
+      response: {
+        text: "Извините, эта поверхность не поддерживает авторизацию. Попробуйте запустить навык с телефона",
+        end_session: true, // TODO: check that it's oks
+      },
+    };
+    res.end(JSON.stringify(response));
+    return;
+  }
+
+  const authenticated = false; // TODO
+  if (!authenticated) {
+    const response: ResBody = {
+      version,
+      // @ts-ignore
+      start_account_linking: {},
+    };
+    res.end(JSON.stringify(response));
+    return;
+  }
 
   const response: ResBody = {
     version,
-    // @ts-ignore
-    start_account_linking: {},
     response: {
       // В свойстве response.text возвращается исходная реплика пользователя.
       // Если навык был активирован без дополнительной команды,
