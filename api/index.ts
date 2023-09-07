@@ -27,6 +27,8 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
 
   const response: ResBody = {
     version,
+    // @ts-ignore
+    start_account_linking: {},
     response: {
       // В свойстве response.text возвращается исходная реплика пользователя.
       // Если навык был активирован без дополнительной команды,
@@ -36,9 +38,6 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
       // Свойство response.end_session возвращается со значением false,
       // чтобы диалог не завершался.
       end_session: false,
-
-      // @ts-ignore
-      start_account_linking: {},
     },
   };
 
