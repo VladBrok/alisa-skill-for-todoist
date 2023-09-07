@@ -19,7 +19,7 @@ dotenv.config();
 // const { json } = require("micro");
 
 export default function handler(req: any, res: any) {
-  console.log(req);
+  console.log("THE REQUEST:", req);
   // Из запроса извлекаются свойства request, session и version.
   const { request, session, version } = req;
 
