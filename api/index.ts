@@ -19,6 +19,10 @@ dotenv.config();
 
 // TODO: extract business logic
 export default function handler(req: VercelRequest, res: VercelResponse) {
+  // if (!authorized) {
+  //   authorize;
+  // }
+
   const { request, version } = req.body as ReqBody;
 
   const response: ResBody = {
@@ -32,6 +36,9 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
       // Свойство response.end_session возвращается со значением false,
       // чтобы диалог не завершался.
       end_session: false,
+
+      // @ts-ignore
+      start_account_linking,
     },
   };
 
