@@ -5,7 +5,7 @@ dotenv.config();
 // const apiToken = process.env["TODOIST_TOKEN"];
 
 // if (!apiToken) {
-//   throw new Error("TODOIST_TOKEN was not provided");
+//   throw new Error("TODOIST_TOKEN was not provided"); 
 // }
 
 // const api = new TodoistApi(apiToken);
