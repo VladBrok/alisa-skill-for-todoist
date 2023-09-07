@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@doist/todoist-api-typescript": "^2.1.2",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.9"
+  }
+}

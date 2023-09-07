@@ -1,0 +1,16 @@
+root:
+    $Do ($Additonal)? $What
+slots:
+    what:
+        source: $What
+    do:
+        source: $Do
+$Do:
+    %lemma
+    покажи | все | какой | перечисли | список
+$Additonal:
+    %lemma
+    все | мои | текущие | список | какой | у меня
+$What:
+    %lemma
+    задача | дело | таска
