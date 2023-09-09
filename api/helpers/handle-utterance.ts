@@ -14,7 +14,7 @@ export default async function handleUtterance(
   const intents = body.request.nlu?.intents;
   const isGetTasks = intents?.["get_tasks"];
   // TODO: uncomment
-  let page = 2;
+  let page = 4;
   // Number(req.cookies["page"]);
   console.log(req.cookies);
 
@@ -55,7 +55,7 @@ export default async function handleUtterance(
                   : ""
               }${page > 1 ? 'Для перехода назад, скажите "назад"\n' : ""}`
             : ""
-        }Скажите "закрой задачу" и название задачи, чтобы отметить её как выполненную`
+        }Для закрытия задачи, скажите "закрой задачу" и её название`
       : `Все задачи выполнены. Так держать!\nСоздайте новую задачу, сказав "создай задачу"`;
 
     const answer: ResBody = {
