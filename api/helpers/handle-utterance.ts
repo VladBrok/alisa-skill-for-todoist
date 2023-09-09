@@ -24,6 +24,8 @@ export default async function handleUtterance(
     );
   }
 
+  console.log("test");
+
   if (isNextPage) {
     page++;
     // TODO: extract (dup)
