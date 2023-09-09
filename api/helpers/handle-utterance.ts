@@ -22,12 +22,13 @@ export default async function handleUtterance(
       skip = 0;
       tasksInPage = tasks.slice(skip, PAGE_SIZE + skip);
     }
+    // TODO: add pauses (tts)
     const text = tasksInPage.length
       ? `${tasksInPage
           .map((task) => formatTaskContent(task.content))
           .join(
             "\n"
-          )}\nСкажите "закрой задачу" и название задачи, чтобы отметить её как выполненную`
+          )}\n\nСкажите "закрой задачу" и название задачи, чтобы отметить её как выполненную`
       : `Все задачи выполнены. Так держать!\nСоздайте новую задачу, сказав "создай задачу"`;
 
     const answer: ResBody = {
