@@ -6,6 +6,13 @@ import formatTaskContent from "../../utils/format-task-content";
 
 const PAGE_SIZE = 7; // TODO: set to 10
 
+async function updatePage(res: VercelResponse, page: number) {
+  res.setHeader(
+    "Set-Cookie",
+    `page=${page}; expires=Fri, 31 Dec 9999 21:10:10 GMT`
+  );
+}
+
 export default async function handleUtterance(
   req: VercelRequest,
   res: VercelResponse,
@@ -19,21 +26,14 @@ export default async function handleUtterance(
   console.log("0---", page);
   if (Number.isNaN(page) || page < 1) {
     page = 1;
-    res.setHeader(
-      "Set-Cookie",
-      "page=1; expires=Fri, 31 Dec 9999 21:10:10 GMT"
-    );
+    await updatePage(res, page);
   }
 
   console.log("1---", page);
 
   if (isNextPage) {
     page++;
-    // TODO: extract (dup)
-    res.setHeader(
-      "Set-Cookie",
-      `page=${page}; expires=Fri, 31 Dec 9999 21:10:10 GMT`
-    );
+    await updatePage(res, page);
   }
 
   console.log("2---", page);
@@ -45,10 +45,7 @@ export default async function handleUtterance(
     const totalPages = Math.max(Math.ceil(tasks.length / PAGE_SIZE), 1);
     if (isGetTasks) {
       page = 1;
-      res.setHeader(
-        "Set-Cookie",
-        "page=1; expires=Fri, 31 Dec 9999 21:10:10 GMT"
-      );
+      await updatePage(res, page);
     }
 
     let skip = (page - 1) * PAGE_SIZE;
@@ -56,11 +53,8 @@ export default async function handleUtterance(
     if (!tasksInPage.length) {
       page = 1;
       skip = (page - 1) * PAGE_SIZE;
-      res.setHeader(
-        "Set-Cookie",
-        "page=1; expires=Fri, 31 Dec 9999 21:10:10 GMT"
-      );
       tasksInPage = tasks.slice(skip, PAGE_SIZE + skip);
+      await updatePage(res, page);
     }
 
     console.log("3---", page);
@@ -98,5 +92,6 @@ export default async function handleUtterance(
       end_session: false,
     },
   };
+
   end(res, answer);
 }
