@@ -29,8 +29,10 @@ export default async function handleUtterance(
           .map((task) => formatTaskContent(task.content))
           .join(
             "\n"
-          )}\n\nСкажите "закрой задачу" и название задачи, чтобы отметить её как выполненную`
-      : `Все задачи выполнены. Так держать!\nСоздайте новую задачу, сказав "создай задачу" ${req.headers.cookie}`;
+          )}\n\nСкажите "закрой задачу" и название задачи, чтобы отметить её как выполненную ${
+          req.headers.cookie
+        }`
+      : `Все задачи выполнены. Так держать!\nСоздайте новую задачу, сказав "создай задачу"`;
 
     const answer: ResBody = {
       version: body.version,
