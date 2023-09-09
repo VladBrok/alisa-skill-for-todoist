@@ -1,5 +1,5 @@
 root:
-    $Do ($Additonal)? $What
+    ($Do ($Additonal)?)? $What
 slots:
     what:
         source: $What
@@ -7,10 +7,10 @@ slots:
         source: $Do
 $Do:
     %lemma
-    покажи | все | какой | перечисли | список
+    покажи | все | какой | перечисли | список | мои
 $Additonal:
     %lemma
     все | мои | текущие | список | какой | у меня
 $What:
     %lemma
-    задача | дело | таска
+    задача | дело | таска | список
