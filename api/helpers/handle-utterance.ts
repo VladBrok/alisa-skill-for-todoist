@@ -40,8 +40,8 @@ export default async function handleUtterance(
       ? `${tasksInPage
           .map((task) => formatTaskContent(task.content))
           .join(
-            "\n"
-          )}\n\nСкажите "закрой задачу" и название задачи, чтобы отметить её как выполненную`
+            "\n\n"
+          )}\n\n\nСкажите "закрой задачу" и название задачи, чтобы отметить её как выполненную`
       : `Все задачи выполнены. Так держать!\nСоздайте новую задачу, сказав "создай задачу"`;
 
     const answer: ResBody = {
