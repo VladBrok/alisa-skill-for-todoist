@@ -2,6 +2,7 @@ import { TodoistApi } from "@doist/todoist-api-typescript";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { ReqBody, ResBody } from "alice-types";
 import pluralize from "../utils/pluralize";
+import end from "./helpers/end-response";
 
 // TODO: extract business logic
 // TODO: handle errors
@@ -12,23 +13,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const supportsAuth = Boolean(body.meta.interfaces.account_linking);
   if (!supportsAuth) {
-    const response: ResBody = {
+    const answer: ResBody = {
       version,
       response: {
         text: "Извините, эта поверхность не поддерживает авторизацию. Попробуйте запустить навык с телефона",
         end_session: true, // TODO: check that it's ok
       },
     };
-    res.end(JSON.stringify(response));
+    end(res, answer);
     return;
   }
 
-  const authenticated = Boolean(
-    // TODO: uncomment or remove
-    // req.headers.authorization ||
-    body.session.user?.access_token
-  );
-
+  const authenticated = Boolean(body.session.user?.access_token);
   // @ts-ignore
   if (authenticated && body.account_linking_complete_event) {
     const apiToken = body.session.user?.access_token || "";
@@ -52,7 +48,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         ])} именно`
       : `Добро пожаловать!\nВсе задачи выполнены, так держать!\nСкажите "создай задачу", чтобы создать новую`;
     // TODO: respond with this if original_utterance is empty, and replace this with greeting
-    const response: ResBody = {
+    const answer: ResBody = {
       version,
       response: {
         text,
@@ -60,21 +56,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       },
     };
 
-    res.end(JSON.stringify(response));
+    end(res, answer);
     return;
   }
 
   if (!authenticated) {
-    const response: ResBody = {
+    const answer: ResBody = {
       version,
       // @ts-ignore
       start_account_linking: {},
     };
-    res.end(JSON.stringify(response));
+    end(res, answer);
     return;
   }
 
-  const response: ResBody = {
+  const answer: ResBody = {
     version,
     response: {
       // В свойстве response.text возвращается исходная реплика пользователя.
@@ -88,5 +84,5 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     },
   };
 
-  res.end(JSON.stringify(response));
+  end(res, answer);
 }
