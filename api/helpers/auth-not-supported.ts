@@ -7,7 +7,7 @@ export default function authNotSupported(res: VercelResponse, body: ReqBody) {
     version: body.version,
     response: {
       text: "Извините, эта поверхность не поддерживает авторизацию.\nПопробуйте запустить навык с телефона",
-      end_session: true, // TODO: check that it's ok
+      end_session: true,
     },
   };
   end(res, answer);

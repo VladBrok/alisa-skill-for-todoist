@@ -7,7 +7,7 @@ export default function handleUtterance(res: VercelResponse, body: ReqBody) {
     version: body.version,
     response: {
       text: "Не реализовано",
-      end_session: true, // TODO: return false
+      end_session: false,
     },
   };
   end(res, answer);
