@@ -2,6 +2,10 @@ import { VercelResponse } from "@vercel/node";
 import { ReqBody, ResBody } from "alice-types";
 import end from "./end-response";
 import getApi from "./get-api";
+import formatTaskContent from "../../utils/format-task-content";
+
+const PAGE_SIZE = 10;
+let skip = 0; // TODO: store
 
 export default async function handleUtterance(
   res: VercelResponse,
@@ -13,9 +17,14 @@ export default async function handleUtterance(
   if (isGetTasks) {
     const api = getApi(body);
     const tasks = await api.getTasks();
-    const text = tasks.length
-      ? `${tasks
-          .map((task) => task.content)
+    let tasksInPage = tasks.slice(skip, PAGE_SIZE + skip);
+    if (!tasksInPage.length) {
+      skip = 0;
+      tasksInPage = tasks.slice(skip, PAGE_SIZE + skip);
+    }
+    const text = tasksInPage.length
+      ? `${tasksInPage
+          .map((task) => formatTaskContent(task.content))
           .join(
             "\n"
           )}\nСкажите "закрой задачу" и название задачи, чтобы отметить её как выполненную`

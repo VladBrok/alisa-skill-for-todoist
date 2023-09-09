@@ -10,6 +10,7 @@ import greetNewUser from "./helpers/greet-new-user";
 // TODO: handle errors
 // TODO: if todoist api returns error caused by auth -> request auth from the user
 // TODO: add yandex user name (fetch it by user_id) to some answers (where it would be appropriate)
+// TODO: handle case when response text is too large (> 1024)
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const body = req.body as ReqBody;
 
