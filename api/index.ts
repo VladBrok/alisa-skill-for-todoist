@@ -19,7 +19,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         end_session: true, // TODO: check that it's ok
       },
     };
-    res.end(JSON.stringify(response));
+    res.end(response);
     return;
   }
 
@@ -55,7 +55,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       },
     };
 
-    res.end(JSON.stringify(response));
+    res.end(response);
     return;
   }
 
@@ -65,7 +65,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // @ts-ignore
       start_account_linking: {},
     };
-    res.end(JSON.stringify(response));
+    res.end(response);
     return;
   }
 
@@ -83,5 +83,5 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     },
   };
 
-  res.end(JSON.stringify(response));
+  res.end(response);
 }
