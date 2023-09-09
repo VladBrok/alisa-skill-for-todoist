@@ -5,7 +5,6 @@ import getApi from "./get-api";
 import formatTaskContent from "../../utils/format-task-content";
 
 const PAGE_SIZE = 10;
-let skip = 0; // TODO: store
 
 export default async function handleUtterance(
   req: VercelRequest,
