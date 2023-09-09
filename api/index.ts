@@ -1,88 +1,40 @@
-import { TodoistApi } from "@doist/todoist-api-typescript";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { ReqBody, ResBody } from "alice-types";
-import pluralize from "../utils/pluralize";
-import end from "./helpers/end-response";
+import { ReqBody } from "alice-types";
+import authNotSupported from "./helpers/auth-not-supported";
+import requestAuth from "./helpers/request-auth";
+import handleUtterance from "./helpers/handle-utterance";
+import greetKnownUser from "./helpers/greet-known-user";
+import greetNewUser from "./helpers/greet-new-user";
 
 // TODO: extract business logic
 // TODO: handle errors
 // TODO: if todoist api returns error caused by auth -> request auth from the user
+// TODO: add yandex user name (fetch it by user_id) to some answers (where it would be appropriate)
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const body = req.body as ReqBody;
-  const { request, version } = body;
 
   const supportsAuth = Boolean(body.meta.interfaces.account_linking);
   if (!supportsAuth) {
-    const answer: ResBody = {
-      version,
-      response: {
-        text: "Извините, эта поверхность не поддерживает авторизацию. Попробуйте запустить навык с телефона",
-        end_session: true, // TODO: check that it's ok
-      },
-    };
-    end(res, answer);
+    authNotSupported(res, body);
     return;
   }
 
   const authenticated = Boolean(body.session.user?.access_token);
-  // @ts-ignore
-  if (authenticated && body.account_linking_complete_event) {
-    const apiToken = body.session.user?.access_token || "";
-    const api = new TodoistApi(apiToken);
-    const tasks = await api.getTasks();
-
-    // TODO: add yandex user name (fetch it by id)
-    const text = tasks.length
-      ? `Добро пожаловать!\nУ вас ${tasks.length} ${pluralize(tasks.length, [
-          "невыполненная",
-          "невыполненных",
-          "невыполненных",
-        ])} ${pluralize(tasks.length, [
-          "задача",
-          "задачи",
-          "задач",
-        ])}.\nСкажите "мои задачи", чтобы узнать, ${pluralize(tasks.length, [
-          "какая",
-          "каких",
-          "каких",
-        ])} именно`
-      : `Добро пожаловать!\nВсе задачи выполнены, так держать!\nСкажите "создай задачу", чтобы создать новую`;
-    // TODO: respond with this if original_utterance is empty, and replace this with greeting
-    const answer: ResBody = {
-      version,
-      response: {
-        text,
-        end_session: false,
-      },
-    };
-
-    end(res, answer);
-    return;
-  }
-
   if (!authenticated) {
-    const answer: ResBody = {
-      version,
-      // @ts-ignore
-      start_account_linking: {},
-    };
-    end(res, answer);
+    requestAuth(res, body);
     return;
   }
 
-  const answer: ResBody = {
-    version,
-    response: {
-      // В свойстве response.text возвращается исходная реплика пользователя.
-      // Если навык был активирован без дополнительной команды,
-      // пользователю нужно сказать "Hello!".
-      text: request.original_utterance || "Bye!",
+  // @ts-ignore
+  if (body.account_linking_complete_event) {
+    greetNewUser(res, body);
+    return;
+  }
 
-      // Свойство response.end_session возвращается со значением false,
-      // чтобы диалог не завершался.
-      end_session: false,
-    },
-  };
+  if (!body.request.original_utterance) {
+    greetKnownUser(res, body);
+    return;
+  }
 
-  end(res, answer);
+  handleUtterance(res, body);
 }
