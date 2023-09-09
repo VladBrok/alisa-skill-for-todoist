@@ -4,7 +4,7 @@ import end from "./end-response";
 import getApi from "./get-api";
 import formatTaskContent from "../../utils/format-task-content";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 5; // TODO: set to 10
 
 export default async function handleUtterance(
   req: VercelRequest,
@@ -16,6 +16,7 @@ export default async function handleUtterance(
   // TODO: uncomment
   let page = 2;
   // Number(req.cookies["page"]);
+  console.log(req.cookies);
 
   if (Number.isNaN(page) || page < 1) {
     page = 1;
