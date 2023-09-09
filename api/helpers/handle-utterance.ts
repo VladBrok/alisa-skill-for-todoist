@@ -24,7 +24,7 @@ export default async function handleUtterance(
     );
   }
 
-  console.log("test");
+  console.log("1---", page);
 
   if (isNextPage) {
     page++;
@@ -34,6 +34,8 @@ export default async function handleUtterance(
       `page=${page}; expires=Fri, 31 Dec 9999 21:10:10 GMT`
     );
   }
+
+  console.log("2---", page);
 
   if (isGetTasks || isNextPage) {
     const api = getApi(body);
@@ -47,6 +49,7 @@ export default async function handleUtterance(
         "page=1; expires=Fri, 31 Dec 9999 21:10:10 GMT"
       );
     }
+
     let skip = (page - 1) * PAGE_SIZE;
     let tasksInPage = tasks.slice(skip, PAGE_SIZE + skip);
     if (!tasksInPage.length) {
@@ -58,6 +61,8 @@ export default async function handleUtterance(
       );
       tasksInPage = tasks.slice(skip, PAGE_SIZE + skip);
     }
+
+    console.log("3---", page);
 
     // TODO: add pauses (tts)
     const text = tasksInPage.length
