@@ -13,9 +13,9 @@ export default async function handleUtterance(
 ) {
   const intents = body.request.nlu?.intents;
   const isGetTasks = intents?.["get_tasks"];
-  let page = Number(req.cookies["page"]);
-  console.log(req.cookies);
+  const isNextPage = intents?.["next_page"];
 
+  let page = Number(req.cookies["page"]);
   if (Number.isNaN(page) || page < 1) {
     page = 1;
     res.setHeader(
@@ -24,11 +24,27 @@ export default async function handleUtterance(
     );
   }
 
-  if (isGetTasks) {
+  if (isNextPage) {
+    page++;
+    // TODO: extract (dup)
+    res.setHeader(
+      "Set-Cookie",
+      `page=${page}; expires=Fri, 31 Dec 9999 21:10:10 GMT`
+    );
+  }
+
+  if (isGetTasks || isNextPage) {
     const api = getApi(body);
     const tasks = await api.getTasks();
 
     const totalPages = Math.max(Math.ceil(tasks.length / PAGE_SIZE), 1);
+    if (isGetTasks) {
+      page = 1;
+      res.setHeader(
+        "Set-Cookie",
+        "page=1; expires=Fri, 31 Dec 9999 21:10:10 GMT"
+      );
+    }
     let skip = (page - 1) * PAGE_SIZE;
     let tasksInPage = tasks.slice(skip, PAGE_SIZE + skip);
     if (!tasksInPage.length) {
