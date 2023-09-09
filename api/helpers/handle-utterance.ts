@@ -14,13 +14,24 @@ export default async function handleUtterance(
 ) {
   const intents = body.request.nlu?.intents;
   const isGetTasks = intents?.["get_tasks"];
+  const skip = Number(req.cookies["skip"]);
+
+  if (Number.isNaN(skip)) {
+    res.setHeader(
+      "Set-Cookie",
+      "skip=0; expires=Fri, 31 Dec 9999 21:10:10 GMT"
+    );
+  }
 
   if (isGetTasks) {
     const api = getApi(body);
     const tasks = await api.getTasks();
     let tasksInPage = tasks.slice(skip, PAGE_SIZE + skip);
     if (!tasksInPage.length) {
-      skip = 0;
+      res.setHeader(
+        "Set-Cookie",
+        "skip=0; expires=Fri, 31 Dec 9999 21:10:10 GMT"
+      );
       tasksInPage = tasks.slice(skip, PAGE_SIZE + skip);
     }
     // TODO: add pauses (tts)
@@ -29,9 +40,7 @@ export default async function handleUtterance(
           .map((task) => formatTaskContent(task.content))
           .join(
             "\n"
-          )}\n\nСкажите "закрой задачу" и название задачи, чтобы отметить её как выполненную ${
-          req.headers.cookie
-        }`
+          )}\n\nСкажите "закрой задачу" и название задачи, чтобы отметить её как выполненную ${skip}`
       : `Все задачи выполнены. Так держать!\nСоздайте новую задачу, сказав "создай задачу"`;
 
     const answer: ResBody = {
@@ -48,7 +57,7 @@ export default async function handleUtterance(
   const answer: ResBody = {
     version: body.version,
     response: {
-      text: `Извините, не поняла Вас. Скажите "что ты умеешь" для просмотра возможных действий`,
+      text: `Извините, не поняла Вас.\nСкажите "что ты умеешь" для просмотра возможных действий`,
       end_session: false,
     },
   };
