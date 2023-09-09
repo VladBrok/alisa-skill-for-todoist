@@ -13,35 +13,46 @@ export default async function handleUtterance(
 ) {
   const intents = body.request.nlu?.intents;
   const isGetTasks = intents?.["get_tasks"];
-  let skip = Number(req.cookies["skip"]);
+  let page = Number(req.cookies["page"]);
 
-  if (Number.isNaN(skip)) {
-    skip = 0;
+  if (Number.isNaN(page) || page < 1) {
+    page = 1;
     res.setHeader(
       "Set-Cookie",
-      "skip=0; expires=Fri, 31 Dec 9999 21:10:10 GMT"
+      "page=1; expires=Fri, 31 Dec 9999 21:10:10 GMT"
     );
   }
 
   if (isGetTasks) {
     const api = getApi(body);
     const tasks = await api.getTasks();
+
+    const totalPages = Math.max(Math.ceil(tasks.length / PAGE_SIZE), 1);
+    let skip = (page - 1) * PAGE_SIZE;
     let tasksInPage = tasks.slice(skip, PAGE_SIZE + skip);
     if (!tasksInPage.length) {
-      skip = 0;
+      page = 1;
+      skip = (page - 1) * PAGE_SIZE;
       res.setHeader(
         "Set-Cookie",
-        "skip=0; expires=Fri, 31 Dec 9999 21:10:10 GMT"
+        "page=1; expires=Fri, 31 Dec 9999 21:10:10 GMT"
       );
       tasksInPage = tasks.slice(skip, PAGE_SIZE + skip);
     }
+
     // TODO: add pauses (tts)
     const text = tasksInPage.length
       ? `${tasksInPage
           .map((task) => formatTaskContent(task.content))
-          .join(
-            "\n\n"
-          )}\n\n\nСкажите "закрой задачу" и название задачи, чтобы отметить её как выполненную`
+          .join("\n\n")}\n\n\n${
+          totalPages > 1
+            ? `Страница ${page} из ${totalPages}. ${
+                page < totalPages
+                  ? 'Для перехода на следующую, скажите "дальше"\n'
+                  : ""
+              }${page > 1 ? 'Для перехода назад, скажите "назад"\n' : ""}`
+            : ""
+        }Скажите "закрой задачу" и название задачи, чтобы отметить её как выполненную`
       : `Все задачи выполнены. Так держать!\nСоздайте новую задачу, сказав "создай задачу"`;
 
     const answer: ResBody = {
