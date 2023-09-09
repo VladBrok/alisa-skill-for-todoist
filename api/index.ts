@@ -28,29 +28,34 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // req.headers.authorization ||
     body.session.user?.access_token
   );
+
   // @ts-ignore
   if (authenticated && body.account_linking_complete_event) {
     const apiToken = body.session.user?.access_token || "";
     const api = new TodoistApi(apiToken);
     const tasks = await api.getTasks();
 
+    // TODO: add yandex user name (fetch it by id)
+    const text = tasks.length
+      ? `Добро пожаловать!\nУ вас ${tasks.length} ${pluralize(tasks.length, [
+          "невыполненная",
+          "невыполненных",
+          "невыполненных",
+        ])} ${pluralize(tasks.length, [
+          "задача",
+          "задачи",
+          "задач",
+        ])}.\nСкажите "мои задачи", чтобы узнать, ${pluralize(tasks.length, [
+          "какая",
+          "каких",
+          "каких",
+        ])} именно`
+      : `Добро пожаловать!\nВсе задачи выполнены, так держать!\nСкажите "создай задачу", чтобы создать новую`;
     // TODO: respond with this if original_utterance is empty, and replace this with greeting
     const response: ResBody = {
       version,
       response: {
-        // TODO: add yandex user name (fetch it by id)
-        text: `Добро пожаловать! У вас ${tasks.length} ${pluralize(
-          tasks.length,
-          ["невыполненная", "невыполненных", "невыполненных"]
-        )} ${pluralize(tasks.length, [
-          "задача",
-          "задачи",
-          "задач",
-        ])}. Скажите "мои задачи", чтобы узнать, ${pluralize(tasks.length, [
-          "какая",
-          "каких",
-          "каких",
-        ])} именно`,
+        text,
         end_session: false,
       },
     };
