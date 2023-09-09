@@ -1,4 +1,4 @@
-import { VercelResponse } from "@vercel/node";
+import { VercelRequest, VercelResponse } from "@vercel/node";
 import { ReqBody, ResBody } from "alice-types";
 import end from "./end-response";
 import getApi from "./get-api";
@@ -8,6 +8,7 @@ const PAGE_SIZE = 10;
 let skip = 0; // TODO: store
 
 export default async function handleUtterance(
+  req: VercelRequest,
   res: VercelResponse,
   body: ReqBody
 ) {
@@ -29,7 +30,7 @@ export default async function handleUtterance(
           .join(
             "\n"
           )}\n\nСкажите "закрой задачу" и название задачи, чтобы отметить её как выполненную`
-      : `Все задачи выполнены. Так держать!\nСоздайте новую задачу, сказав "создай задачу"`;
+      : `Все задачи выполнены. Так держать!\nСоздайте новую задачу, сказав "создай задачу" ${req.headers.cookie}`;
 
     const answer: ResBody = {
       version: body.version,
