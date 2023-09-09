@@ -1,24 +1,12 @@
-// import { TodoistApi } from "@doist/todoist-api-typescript";
+import { TodoistApi } from "@doist/todoist-api-typescript";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { ReqBody, ResBody } from "alice-types";
-import dotenv from "dotenv";
-dotenv.config();
-
-// const apiToken = process.env["TODOIST_TOKEN"];
-
-// if (!apiToken) {
-//   throw new Error("TODOIST_TOKEN was not provided");
-// }
-
-// const api = new TodoistApi(apiToken);
-
-// api
-//   .getTasks()
-//   .then((tasks) => console.log(tasks))
-//   .catch((error) => console.log(error));
+import pluralize from "../utils/pluralize";
 
 // TODO: extract business logic
-export default function handler(req: VercelRequest, res: VercelResponse) {
+// TODO: handle errors
+// TODO: if todoist api returns error caused by auth -> request auth from the user
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   const body = req.body as ReqBody;
   const { request, version } = body;
 
@@ -28,14 +16,48 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
       version,
       response: {
         text: "Извините, эта поверхность не поддерживает авторизацию. Попробуйте запустить навык с телефона",
-        end_session: true, // TODO: check that it's oks
+        end_session: true, // TODO: check that it's ok
       },
     };
     res.end(JSON.stringify(response));
     return;
   }
 
-  const authenticated = false; // TODO
+  const authenticated = Boolean(
+    // TODO: uncomment or remove
+    // req.headers.authorization ||
+    body.session.user?.access_token
+  );
+  // @ts-ignore
+  if (authenticated && body.account_linking_complete_event) {
+    const apiToken = body.session.user?.access_token || "";
+    const api = new TodoistApi(apiToken);
+    const tasks = await api.getTasks();
+
+    // TODO: respond with this if original_utterance is empty, and replace this with greeting
+    const response: ResBody = {
+      version,
+      response: {
+        // TODO: add yandex user name (fetch it by id)
+        text: `Добро пожаловать! У вас ${tasks.length} ${pluralize(
+          tasks.length,
+          ["невыполненная", "невыполненных", "невыполненных"]
+        )} ${pluralize(tasks.length, [
+          "задача",
+          "задачи",
+          "задач",
+        ])}. Скажите "мои задачи", чтобы узнать, ${pluralize(tasks.length, [
+          "какая",
+          "каких",
+          "каких",
+        ])} именно`,
+        end_session: false,
+      },
+    };
+
+    res.end(JSON.stringify(response));
+    return;
+  }
 
   if (!authenticated) {
     const response: ResBody = {
