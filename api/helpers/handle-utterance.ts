@@ -22,6 +22,8 @@ export default async function handleUtterance(
   const isGetTasks = intents?.["get_tasks"];
   const isNextPage = intents?.["next_page"];
 
+  console.log("cookie:", req.cookies, req.headers.cookie);
+
   let page = Number(req.cookies["page"]);
   console.log("0---", page);
   if (Number.isNaN(page) || page < 1) {
