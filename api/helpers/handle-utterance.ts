@@ -13,7 +13,9 @@ export default async function handleUtterance(
 ) {
   const intents = body.request.nlu?.intents;
   const isGetTasks = intents?.["get_tasks"];
-  let page = Number(req.cookies["page"]);
+  // TODO: uncomment
+  let page = 2;
+  // Number(req.cookies["page"]);
 
   if (Number.isNaN(page) || page < 1) {
     page = 1;
