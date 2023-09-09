@@ -13,9 +13,10 @@ export default async function handleUtterance(
 ) {
   const intents = body.request.nlu?.intents;
   const isGetTasks = intents?.["get_tasks"];
-  const skip = Number(req.cookies["skip"]);
+  let skip = Number(req.cookies["skip"]);
 
   if (Number.isNaN(skip)) {
+    skip = 0;
     res.setHeader(
       "Set-Cookie",
       "skip=0; expires=Fri, 31 Dec 9999 21:10:10 GMT"
@@ -27,6 +28,7 @@ export default async function handleUtterance(
     const tasks = await api.getTasks();
     let tasksInPage = tasks.slice(skip, PAGE_SIZE + skip);
     if (!tasksInPage.length) {
+      skip = 0;
       res.setHeader(
         "Set-Cookie",
         "skip=0; expires=Fri, 31 Dec 9999 21:10:10 GMT"
