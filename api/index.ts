@@ -36,6 +36,7 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const authenticated = false; // TODO
+
   if (!authenticated) {
     const response: ResBody = {
       version,
