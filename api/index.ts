@@ -27,7 +27,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   // TODO: remove (it's for test)
   const api = getApi(body);
-  await api.addTask({ content: "постирать носки завтра в 5 утра" });
+  await api.addTask({
+    content: "постирать носки завтра в 5 утра",
+    dueDate: "постирать носки завтра в 5 утра",
+    dueLang: "ru",
+  });
 
   // @ts-ignore
   if (body.account_linking_complete_event) {
