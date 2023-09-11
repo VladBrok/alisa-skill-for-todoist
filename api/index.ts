@@ -8,7 +8,6 @@ import greetNewUser from "./helpers/greet-new-user";
 import handleError from "./helpers/handle-error";
 
 // TODO: if todoist api returns error caused by auth -> request auth from the user
-// TODO: add yandex user name (fetch it by user_id) to some answers (where it would be appropriate)
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const body = req.body as ReqBody;
 
