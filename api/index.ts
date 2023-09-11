@@ -26,14 +26,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   // @ts-ignore
   if (body.account_linking_complete_event) {
-    greetNewUser(res, body);
+    await greetNewUser(res, body);
     return;
   }
 
   if (!body.request.original_utterance) {
-    greetKnownUser(res, body);
+    await greetKnownUser(res, body);
     return;
   }
 
-  handleUtterance(res, body);
+  await handleUtterance(res, body);
 }
