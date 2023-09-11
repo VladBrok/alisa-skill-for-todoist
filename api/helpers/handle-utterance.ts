@@ -99,7 +99,7 @@ export default async function handleUtterance(
             .toLowerCase()
             .includes("invalid date format")
         ) {
-          content += ` ${dueString}`;
+          content += `${hasDueSeparator ? " срок" : ""} ${dueString}`;
           dueString = "";
           await api.addTask({
             content,
