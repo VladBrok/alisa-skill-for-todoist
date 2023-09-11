@@ -21,6 +21,7 @@ export default async function handleUtterance(
   const intents = body.request.nlu?.intents;
   const isGetTasks = intents?.["get_tasks"];
   const isNextPage = intents?.["next_page"];
+  let responseText = "";
 
   console.log("cookie:", req.cookies, req.headers.cookie);
 
@@ -62,7 +63,7 @@ export default async function handleUtterance(
     console.log("3---", page);
 
     // TODO: add pauses (tts)
-    const text = tasksInPage.length
+    responseText = tasksInPage.length
       ? `${tasksInPage
           .map((task) => formatTaskContent(task.content))
           .join("\n\n")}\n\n\n${
@@ -75,23 +76,18 @@ export default async function handleUtterance(
             : ""
         }Для закрытия задачи, скажите "закрой задачу" и её название`
       : `Все задачи выполнены. Так держать!\nСоздайте новую задачу, сказав "создай задачу"`;
-
-    const answer: ResBody = {
-      version: body.version,
-      response: {
-        text,
-        end_session: false,
-      },
-    };
-    end(res, answer);
-    return;
+  } else {
+    responseText = `Извините, не поняла Вас.\nСкажите "что ты умеешь" для просмотра возможных действий`;
   }
 
   const answer: ResBody = {
     version: body.version,
     response: {
-      text: `Извините, не поняла Вас.\nСкажите "что ты умеешь" для просмотра возможных действий`,
+      text: responseText,
       end_session: false,
+    },
+    session_state: {
+      page,
     },
   };
 
