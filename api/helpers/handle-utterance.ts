@@ -84,16 +84,34 @@ export default async function handleUtterance(
     }
 
     if (content) {
+      const api = getApi(body);
+
       try {
-        const api = getApi(body);
         await api.addTask({
           content,
           ...(Boolean(dueString) && { dueString, dueLang: "ru" }),
         });
       } catch (e) {
-        // TODO: if todoist returned an error because of invalid dueString, just call .addTask again but this time without due string
-        console.log(e);
+        if (
+          (e as any).responseData
+            .toString()
+            .trim()
+            .toLowerCase()
+            .includes("invalid date format")
+        ) {
+          content += ` ${dueString}`;
+          dueString = "";
+          await api.addTask({
+            content,
+          });
+        } else {
+          throw e;
+        }
       }
+
+      responseText = `Задача ${formatTaskContent(content)} создана. ${
+        dueString ? `Срок: ${dueString}` : ""
+      }`;
     }
   }
 
