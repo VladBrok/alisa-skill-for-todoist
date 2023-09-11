@@ -14,7 +14,8 @@ export default async function handleUtterance(
   const isGetTasks = intents?.["get_tasks"];
   const isNextPage = intents?.["next_page"];
   const isPrevPage = intents?.["prev_page"];
-  let responseText = "";
+  const isCreateTask = intents?.["create_task"];
+  let responseText = `Извините, не поняла Вас.\nСкажите "что ты умеешь" для просмотра возможных действий`;
   let responseTts = "";
 
   let page = Number(body.state?.session?.["page"]);
@@ -64,8 +65,36 @@ export default async function handleUtterance(
       .replaceAll("\n\n\n", " sil <[400]> ")
       .replaceAll("\n\n", " sil <[200]> ")
       .replaceAll("\n", " sil <[100]> ");
-  } else {
-    responseText = `Извините, не поняла Вас.\nСкажите "что ты умеешь" для просмотра возможных действий`;
+  } else if (isCreateTask) {
+    const slots = body.request.nlu?.intents?.["create_task"]?.slots;
+    let content = slots?.["content"]?.value.toString() || "";
+    let dueString = slots?.["dueString"]?.value.toString() || "";
+
+    /**  
+      Todoist API is not able to extract date from string like "помыть окно завтра",
+      it requires to explicitly set `dueString`. Because of this, we use `dueSeparator`
+      to distinguish between the task content and the task date.
+      If the user hasn't specified the `dueSeparator` (word "срок") that separates `content` and `dueString`,
+      we assume that both `content` and `dueString` have the task `content`, and `dueString` is not specified in this case.
+    */
+    const hasDueSeparator = body.request.original_utterance.includes("срок");
+    if (!hasDueSeparator) {
+      content += ` ${dueString}`;
+      dueString = "";
+    }
+
+    if (content) {
+      try {
+        const api = getApi(body);
+        await api.addTask({
+          content,
+          ...(Boolean(dueString) && { dueString, dueLang: "ru" }),
+        });
+      } catch (e) {
+        // TODO: if todoist returned an error because of invalid dueString, just call .addTask again but this time without due string
+        console.log(e);
+      }
+    }
   }
 
   const answer: ResBody = {

@@ -21,7 +21,7 @@ export default async function greetKnownUser(
         "задача",
         "задачи",
         "задач",
-      ])}.\nСкажите "мои задачи", чтобы узнать, ${pluralize(taskCount, [
+      ])}.\nСкажите "задачи", чтобы узнать, ${pluralize(taskCount, [
         "какая",
         "каких",
         "каких",

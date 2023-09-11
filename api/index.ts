@@ -5,7 +5,6 @@ import requestAuth from "./helpers/request-auth";
 import handleUtterance from "./helpers/handle-utterance";
 import greetKnownUser from "./helpers/greet-known-user";
 import greetNewUser from "./helpers/greet-new-user";
-import getApi from "./helpers/get-api";
 
 // TODO: handle errors
 // TODO: if todoist api returns error caused by auth -> request auth from the user
@@ -24,14 +23,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     requestAuth(res, body);
     return;
   }
-
-  // TODO: remove (it's for test)
-  const api = getApi(body);
-  await api.addTask({
-    content: "постирать носки завтра в 5 утра",
-    dueString: "завтра в 5 утра",
-    dueLang: "ru",
-  });
 
   // @ts-ignore
   if (body.account_linking_complete_event) {
