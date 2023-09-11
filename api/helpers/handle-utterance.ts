@@ -77,7 +77,7 @@ export default async function handleUtterance(
       If the user hasn't specified the `dueSeparator` (word "срок") that separates `content` and `dueString`,
       we assume that both `content` and `dueString` have the task `content`, and `dueString` is not specified in this case.
     */
-    const hasDueSeparator = body.request.original_utterance.includes("срок");
+    const hasDueSeparator = body.request.nlu?.tokens.some((x) => x === "срок");
     if (!hasDueSeparator) {
       content += ` ${dueString}`;
       dueString = "";
