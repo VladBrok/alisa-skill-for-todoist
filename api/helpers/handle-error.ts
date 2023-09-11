@@ -12,7 +12,7 @@ export default function handleError(
     version: body.version,
     response: {
       text: 'Ой, я не смогла обработать запрос.\nПожалуйста, повторите его, или скажите "что ты умеешь" для просмотра доступных действий',
-      end_session: true,
+      end_session: false,
     },
   };
   end(res, answer);
