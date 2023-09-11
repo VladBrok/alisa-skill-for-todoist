@@ -15,14 +15,12 @@ export default async function handleUtterance(
   const isNextPage = intents?.["next_page"];
   const isPrevPage = intents?.["prev_page"];
   let responseText = "";
+  let responseTts = "";
 
   let page = Number(body.state?.session?.["page"]);
-  console.log("0---", page);
   if (Number.isNaN(page) || page < 1) {
     page = 1;
   }
-
-  console.log("1---", page);
 
   if (isNextPage) {
     page++;
@@ -31,8 +29,6 @@ export default async function handleUtterance(
   if (isPrevPage) {
     page--;
   }
-
-  console.log("2---", page);
 
   if (isGetTasks || isNextPage || isPrevPage) {
     const api = getApi(body);
@@ -51,9 +47,6 @@ export default async function handleUtterance(
       tasksInPage = tasks.slice(skip, PAGE_SIZE + skip);
     }
 
-    console.log("3---", page);
-
-    // TODO: add pauses (tts)
     responseText = tasksInPage.length
       ? `${tasksInPage
           .map((task) => formatTaskContent(task.content))
@@ -67,6 +60,7 @@ export default async function handleUtterance(
             : ""
         }Для закрытия задачи, скажите "закрой задачу" и её название`
       : `Все задачи выполнены. Так держать!\nСоздайте новую задачу, сказав "создай задачу"`;
+    responseTts = responseText.replaceAll("\n\n", " sil <[500]> ");
   } else {
     responseText = `Извините, не поняла Вас.\nСкажите "что ты умеешь" для просмотра возможных действий`;
   }
@@ -76,6 +70,7 @@ export default async function handleUtterance(
     response: {
       text: responseText,
       end_session: false,
+      ...(Boolean(responseTts) && { tts: responseTts }),
     },
     session_state: {
       page,
