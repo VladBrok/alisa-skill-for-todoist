@@ -7,7 +7,7 @@ export default function handleError(
   res: VercelResponse,
   body: ReqBody
 ) {
-  console.error(e); // TODO: report error
+  console.error(e); // TODO: report an error
   const answer: ResBody = {
     version: body.version,
     response: {

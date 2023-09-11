@@ -13,8 +13,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const body = req.body as ReqBody;
 
   try {
-    throw new Error("oops");
-
     const supportsAuth = Boolean(body.meta.interfaces.account_linking);
     if (!supportsAuth) {
       authNotSupported(res, body);
