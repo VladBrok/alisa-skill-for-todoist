@@ -1,0 +1,19 @@
+root:
+    $Action ($Target)? $Content ($DueSeparator)? $DueString
+slots:
+    content:
+        source: $Content
+    dueString:
+        source: $DueString    
+$Action:
+    %lemma
+    создай | запиши | новая | добавь
+$Target:
+    %lemma
+    задача | таска | дело | миссия
+$Content:
+    .+
+$DueSeparator:
+    срок
+$DueString:
+    .+
