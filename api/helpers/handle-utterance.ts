@@ -4,7 +4,7 @@ import end from "./end-response";
 import getApi from "./get-api";
 import formatTaskContent from "../../utils/format-task-content";
 
-const PAGE_SIZE = 7; // TODO: set to 10
+const PAGE_SIZE = 10;
 
 export default async function handleUtterance(
   res: VercelResponse,
