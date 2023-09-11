@@ -77,10 +77,15 @@ export default async function handleUtterance(
       If the user hasn't specified the `dueSeparator` (word "срок") that separates `content` and `dueString`,
       we assume that both `content` and `dueString` have the task `content`, and `dueString` is not specified in this case.
     */
-    const hasDueSeparator = body.request.nlu?.tokens.some((x) => x === "срок");
+    const dueSeparatorsCount =
+      body.request.nlu?.tokens.filter((x) => x === "срок").length || 0;
+    const hasDueSeparator = dueSeparatorsCount > 0;
     if (!hasDueSeparator) {
       content += ` ${dueString}`;
       dueString = "";
+    }
+    if (dueSeparatorsCount > 1) {
+      content += " срок";
     }
 
     if (content) {
@@ -99,7 +104,9 @@ export default async function handleUtterance(
             .toLowerCase()
             .includes("invalid date format")
         ) {
-          content += `${hasDueSeparator ? " срок" : ""} ${dueString}`;
+          content += `${
+            hasDueSeparator && !content.includes("срок") ? " срок" : ""
+          } ${dueString}`;
           dueString = "";
           await api.addTask({
             content,
@@ -109,7 +116,7 @@ export default async function handleUtterance(
         }
       }
 
-      responseText = `Задача ${formatTaskContent(content)} создана. ${
+      responseText = `Задача "${formatTaskContent(content)}" создана. ${
         dueString ? `Срок: ${dueString}` : ""
       }`;
     }
