@@ -60,7 +60,10 @@ export default async function handleUtterance(
             : ""
         }Для закрытия задачи, скажите "закрой задачу" и её название`
       : `Все задачи выполнены. Так держать!\nСоздайте новую задачу, сказав "создай задачу"`;
-    responseTts = responseText.replaceAll("\n\n", " sil <[500]> ");
+    responseTts = responseText
+      .replaceAll("\n\n\n", " sil <[400]> ")
+      .replaceAll("\n\n", " sil <[200]> ")
+      .replaceAll("\n", " ");
   } else {
     responseText = `Извините, не поняла Вас.\nСкажите "что ты умеешь" для просмотра возможных действий`;
   }
