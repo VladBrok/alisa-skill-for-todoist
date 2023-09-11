@@ -22,11 +22,9 @@ export default async function handleUtterance(
   if (Number.isNaN(page) || page < 1) {
     page = 1;
   }
-
   if (isNextPage) {
     page++;
   }
-
   if (isPrevPage) {
     page--;
   }
@@ -74,7 +72,7 @@ export default async function handleUtterance(
       Todoist API is not able to extract date from string like "помыть окно завтра",
       it requires to explicitly set `dueString`. Because of this, we use `dueSeparator`
       to distinguish between the task content and the task date.
-      If the user hasn't specified the `dueSeparator` (word "срок") that separates `content` and `dueString`,
+      If the user hasn't specified the `dueSeparator` (word "срок"),
       we assume that both `content` and `dueString` have the task `content`, and `dueString` is not specified in this case.
     */
     const dueSeparatorsCount =
@@ -133,6 +131,5 @@ export default async function handleUtterance(
       page,
     },
   };
-
   end(res, answer);
 }
