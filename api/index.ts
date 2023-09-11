@@ -35,5 +35,5 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
-  handleUtterance(req, res, body);
+  handleUtterance(res, body);
 }

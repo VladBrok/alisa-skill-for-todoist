@@ -1,4 +1,4 @@
-import { VercelRequest, VercelResponse } from "@vercel/node";
+import { VercelResponse } from "@vercel/node";
 import { ReqBody, ResBody } from "alice-types";
 import end from "./end-response";
 import getApi from "./get-api";
@@ -6,15 +6,7 @@ import formatTaskContent from "../../utils/format-task-content";
 
 const PAGE_SIZE = 7; // TODO: set to 10
 
-async function updatePage(res: VercelResponse, page: number) {
-  res.setHeader(
-    "Set-Cookie",
-    `page=${page}; expires=Fri, 31 Dec 9999 21:10:10 GMT`
-  );
-}
-
 export default async function handleUtterance(
-  req: VercelRequest,
   res: VercelResponse,
   body: ReqBody
 ) {
@@ -23,20 +15,16 @@ export default async function handleUtterance(
   const isNextPage = intents?.["next_page"];
   let responseText = "";
 
-  console.log("cookie:", req.cookies, req.headers.cookie);
-
-  let page = Number(req.cookies["page"]);
+  let page = Number(body.state?.session?.["page"]);
   console.log("0---", page);
   if (Number.isNaN(page) || page < 1) {
     page = 1;
-    await updatePage(res, page);
   }
 
   console.log("1---", page);
 
   if (isNextPage) {
     page++;
-    await updatePage(res, page);
   }
 
   console.log("2---", page);
@@ -48,7 +36,6 @@ export default async function handleUtterance(
     const totalPages = Math.max(Math.ceil(tasks.length / PAGE_SIZE), 1);
     if (isGetTasks) {
       page = 1;
-      await updatePage(res, page);
     }
 
     let skip = (page - 1) * PAGE_SIZE;
@@ -57,7 +44,6 @@ export default async function handleUtterance(
       page = 1;
       skip = (page - 1) * PAGE_SIZE;
       tasksInPage = tasks.slice(skip, PAGE_SIZE + skip);
-      await updatePage(res, page);
     }
 
     console.log("3---", page);
