@@ -13,6 +13,7 @@ export default async function handleUtterance(
   const intents = body.request.nlu?.intents;
   const isGetTasks = intents?.["get_tasks"];
   const isNextPage = intents?.["next_page"];
+  const isPrevPage = intents?.["prev_page"];
   let responseText = "";
 
   let page = Number(body.state?.session?.["page"]);
@@ -27,9 +28,13 @@ export default async function handleUtterance(
     page++;
   }
 
+  if (isPrevPage) {
+    page--;
+  }
+
   console.log("2---", page);
 
-  if (isGetTasks || isNextPage) {
+  if (isGetTasks || isNextPage || isPrevPage) {
     const api = getApi(body);
     const tasks = await api.getTasks();
 
