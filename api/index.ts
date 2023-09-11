@@ -29,7 +29,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const api = getApi(body);
   await api.addTask({
     content: "постирать носки завтра в 5 утра",
-    dueDate: "постирать носки завтра в 5 утра",
+    dueString: "постирать носки завтра в 5 утра",
     dueLang: "ru",
   });
 
