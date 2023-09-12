@@ -1,7 +1,7 @@
-import pluralize from "../../utils/pluralize";
 import { ReqBody, ResBody } from "alice-types";
-import end from "./end-response";
 import { VercelResponse } from "@vercel/node";
+import { t } from 'i18next';
+import end from "./end-response";
 import getApi from "./get-api";
 
 export default async function greetKnownUser(
@@ -12,26 +12,10 @@ export default async function greetKnownUser(
   const tasks = await api.getTasks();
   const taskCount = tasks.length;
 
-  const text = taskCount
-    ? `С возвращением!\nУ Вас ${taskCount} ${pluralize(taskCount, [
-        "невыполненная",
-        "невыполненных",
-        "невыполненных",
-      ])} ${pluralize(taskCount, [
-        "задача",
-        "задачи",
-        "задач",
-      ])}.\nСкажите "задачи", чтобы узнать, ${pluralize(taskCount, [
-        "какая",
-        "каких",
-        "каких",
-      ])} именно`
-    : `С возвращением!\nВсе задачи выполнены, так держать!\nСоздайте новую задачу, сказав, например: "Создай задачу постирать носки срок завтра"`;
-
   const answer: ResBody = {
     version: body.version,
     response: {
-      text,
+      text: t('greet_known_user', { count: taskCount }),
       end_session: false,
     },
   };

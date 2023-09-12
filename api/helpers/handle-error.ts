@@ -2,6 +2,7 @@ import { ReqBody, ResBody } from "alice-types";
 import end from "./end-response";
 import { VercelResponse } from "@vercel/node";
 import requestAuth from "./request-auth";
+import { t } from 'i18next';
 
 export default function handleError(
   e: unknown,
@@ -18,9 +19,11 @@ export default function handleError(
   const answer: ResBody = {
     version: body.version,
     response: {
-      text: 'Ой, я не смогла обработать запрос.\nПожалуйста, повторите его, или скажите "что ты умеешь" для просмотра доступных действий',
+      text: t('handle_error'),
       end_session: false,
     },
   };
   end(res, answer);
 }
+
+// 
