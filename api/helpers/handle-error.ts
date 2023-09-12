@@ -1,6 +1,7 @@
 import { ReqBody, ResBody } from "alice-types";
 import end from "./end-response";
 import { VercelResponse } from "@vercel/node";
+import requestAuth from "./request-auth";
 
 export default function handleError(
   e: unknown,
@@ -8,6 +9,12 @@ export default function handleError(
   body: ReqBody
 ) {
   console.error(e); // TODO: report an error
+
+  if ((e as any).httpStatusCode == 401) {
+    requestAuth(res, body);
+    return;
+  }
+
   const answer: ResBody = {
     version: body.version,
     response: {
