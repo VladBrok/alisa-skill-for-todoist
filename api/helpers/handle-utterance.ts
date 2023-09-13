@@ -1,5 +1,6 @@
 import { VercelResponse } from "@vercel/node";
 import { ReqBody, ResBody } from "alice-types";
+import { t } from "i18next";
 import end from "./end-response";
 import getApi from "./get-api";
 import formatTaskContent from "../../utils/format-task-content";
@@ -15,7 +16,7 @@ export default async function handleUtterance(
   const isNextPage = intents?.["next_page"];
   const isPrevPage = intents?.["prev_page"];
   const isCreateTask = intents?.["create_task"];
-  let responseText = `Извините, не поняла Вас.\nСкажите "что ты умеешь" для просмотра возможных действий`;
+  let responseText = t('unhandle_utterance');
   let responseTts = "";
 
   let page = Number(body.state?.session?.["page"]);
@@ -58,7 +59,7 @@ export default async function handleUtterance(
               }${page > 1 ? 'Для перехода назад, скажите "назад"\n' : ""}`
             : ""
         }Для закрытия задачи, скажите "закрой задачу" и её название`
-      : `Все задачи выполнены. Так держать!\nСоздайте новую задачу, сказав, например: "Создай задачу постирать носки срок завтра"`;
+      : t('all_tasks_done');
     responseTts = responseText
       .replaceAll("\n\n\n", " sil <[400]> ")
       .replaceAll("\n\n", " sil <[200]> ")
@@ -114,9 +115,11 @@ export default async function handleUtterance(
         }
       }
 
-      responseText = `Задача "${formatTaskContent(content)}" создана. ${
-        dueString ? `Срок: ${dueString}` : ""
-      }`;
+      responseText = t('task_created', { 
+        taskContent: formatTaskContent(content),
+        // не знаю, как корректнее это сделать, т.к. ICU в select не поддерживает undefined или что-то подобное
+        due: dueString ? dueString : "empty"
+      })
     }
   }
 
