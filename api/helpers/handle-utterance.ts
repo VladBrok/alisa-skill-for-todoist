@@ -47,19 +47,32 @@ export default async function handleUtterance(
       tasksInPage = tasks.slice(skip, PAGE_SIZE + skip);
     }
 
-    responseText = tasksInPage.length
-      ? `${tasksInPage
-          .map((task) => formatTaskContent(task.content))
-          .join("\n\n")}\n\n\n${
-          totalPages > 1
-            ? `Страница ${page} из ${totalPages}. ${
-                page < totalPages
-                  ? 'Для перехода на следующую, скажите "дальше"\n'
-                  : ""
-              }${page > 1 ? 'Для перехода назад, скажите "назад"\n' : ""}`
-            : ""
-        }Для закрытия задачи, скажите "закрой задачу" и её название`
-      : t('all_tasks_done');
+    if (tasksInPage.length) {
+      responseText = t('all_tasks_done');
+    } else {
+      const taskList = tasksInPage
+        .map((task) => formatTaskContent(task.content))
+        .join("\n\n")
+
+      responseText = `${taskList}\n\n\n`
+
+      if (totalPages > 1) {
+        let pageFooter = t('current_page', { 
+          page,
+          totalPages
+        }) + "\n";
+        if (page < totalPages) {
+          pageFooter += t('next_page') + "\n"
+        }
+        if (page > 1) {
+          pageFooter += t('prev_page') + "\n"
+        }
+        responseText += pageFooter
+      }
+
+      responseText += t('close_task')
+    }
+
     responseTts = responseText
       .replaceAll("\n\n\n", " sil <[400]> ")
       .replaceAll("\n\n", " sil <[200]> ")
