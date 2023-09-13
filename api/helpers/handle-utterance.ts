@@ -48,8 +48,6 @@ export default async function handleUtterance(
     }
 
     if (tasksInPage.length) {
-      responseText = t('all_tasks_done');
-    } else {
       const taskList = tasksInPage
         .map((task) => formatTaskContent(task.content))
         .join("\n\n")
@@ -71,6 +69,8 @@ export default async function handleUtterance(
       }
 
       responseText += t('close_task')
+    } else {
+      responseText = t('all_tasks_done');
     }
 
     responseTts = responseText
