@@ -24,7 +24,7 @@ const translation = {
 
   "unhandle_utterance": `Извините, не поняла Вас.\nСкажите "что ты умеешь" для просмотра возможных действий`,
 
-  "task_created": `Задача {taskContent} создана. {due, select, empty{} other{Срок: {due}}}`,
+  "task_created": `Задача "{taskContent}" создана. {due, select, empty{} other{Срок: {due}}}`,
 
   "current_page": `Страница {page} из {totalPages}.`,
 
