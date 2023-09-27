@@ -69,7 +69,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.log("filter:", filter);
     const api = getApi(body);
     const tasks = await api.getTasks({
-      ...(Boolean(filter) && { filter }),
+      ...(Boolean(filter) && { filter, lang: "ru" }),
     });
     console.log("tasks:", tasks);
 
