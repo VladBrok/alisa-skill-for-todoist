@@ -16,7 +16,7 @@ export default async function handleUtterance(
   const isNextPage = intents?.["next_page"];
   const isPrevPage = intents?.["prev_page"];
   const isCreateTask = intents?.["create_task"];
-  let responseText = t('unhandle_utterance');
+  let responseText = t("unhandle_utterance");
   let responseTts = "";
 
   let page = Number(body.state?.session?.["page"]);
@@ -31,8 +31,13 @@ export default async function handleUtterance(
   }
 
   if (isGetTasks || isNextPage || isPrevPage) {
+    const filter = (
+      intents?.["get_tasks"]?.slots?.["when"]?.value || ""
+    ).toString();
     const api = getApi(body);
-    const tasks = await api.getTasks();
+    const tasks = await api.getTasks({
+      ...(Boolean(filter) && { filter, lang: "ru" }),
+    });
 
     const totalPages = Math.max(Math.ceil(tasks.length / PAGE_SIZE), 1);
     if (isGetTasks) {
@@ -50,27 +55,28 @@ export default async function handleUtterance(
     if (tasksInPage.length) {
       const taskList = tasksInPage
         .map((task) => formatTaskContent(task.content))
-        .join("\n\n")
+        .join("\n\n");
 
-      responseText = `${taskList}\n\n\n`
+      responseText = `${taskList}\n\n\n`;
 
       if (totalPages > 1) {
-        let pageFooter = t('current_page', { 
-          page,
-          totalPages
-        }) + "\n";
+        let pageFooter =
+          t("current_page", {
+            page,
+            totalPages,
+          }) + "\n";
         if (page < totalPages) {
-          pageFooter += t('next_page') + "\n"
+          pageFooter += t("next_page") + "\n";
         }
         if (page > 1) {
-          pageFooter += t('prev_page') + "\n"
+          pageFooter += t("prev_page") + "\n";
         }
-        responseText += pageFooter
+        responseText += pageFooter;
       }
 
-      responseText += t('close_task')
+      responseText += t("close_task");
     } else {
-      responseText = t('all_tasks_done');
+      responseText = t("all_tasks_done");
     }
 
     responseTts = responseText
@@ -128,11 +134,11 @@ export default async function handleUtterance(
         }
       }
 
-      responseText = t('task_created', { 
+      responseText = t("task_created", {
         taskContent: formatTaskContent(content),
         // не знаю, как корректнее это сделать, т.к. ICU в select не поддерживает undefined или что-то подобное
-        due: dueString ? dueString : "empty"
-      })
+        due: dueString ? dueString : "empty",
+      });
     }
   }
 

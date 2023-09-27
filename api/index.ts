@@ -9,7 +9,6 @@ import handleUtterance from "./helpers/handle-utterance";
 import greetKnownUser from "./helpers/greet-known-user";
 import greetNewUser from "./helpers/greet-new-user";
 import handleError from "./helpers/handle-error";
-import getApi from "./helpers/get-api";
 
 // TODO: добавить tts?
 const translation = {
@@ -61,17 +60,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       requestAuth(res, body);
       return;
     }
-
-    // TODO: remove (it's for testing)
-    const filter = (
-      body.request.nlu?.intents?.["get_tasks"]?.slots?.["when"]?.value || ""
-    ).toString();
-    console.log("filter:", filter);
-    const api = getApi(body);
-    const tasks = await api.getTasks({
-      ...(Boolean(filter) && { filter, lang: "ru" }),
-    });
-    console.log("tasks:", tasks);
 
     // @ts-ignore
     if (body.account_linking_complete_event) {
