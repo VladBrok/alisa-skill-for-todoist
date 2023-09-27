@@ -69,7 +69,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // TODO: remove
     const api = getApi(body);
     const tasks = await api.getTasks({
-      filter: "поиск: пойти лыжи",
+      filter: "поиск: на",
       lang: "ru",
     });
     console.log("found tasks:", tasks);
