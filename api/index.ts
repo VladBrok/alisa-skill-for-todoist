@@ -69,10 +69,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // TODO: remove
     const api = getApi(body);
     const tasks = await api.getTasks({
-      filter: "поиск: пойти на лыжи",
+      filter: "поиск: пойти лыжи",
       lang: "ru",
     });
-    console.log("tasks:", tasks);
+    console.log("found tasks:", tasks);
 
     // @ts-ignore
     if (body.account_linking_complete_event) {
