@@ -66,6 +66,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const filter = (
       body.request.nlu?.intents?.["get_tasks"]?.slots?.["when"]?.value || ""
     ).toString();
+    console.log("filter:", filter);
     const api = getApi(body);
     const tasks = await api.getTasks({
       ...(Boolean(filter) && { filter }),
