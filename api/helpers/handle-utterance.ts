@@ -36,7 +36,7 @@ export default async function handleUtterance(
     ).toString();
     const api = getApi(body);
     const tasks = await api.getTasks({
-      ...(Boolean(dateFilter) && { dateFilter, lang: "ru" }),
+      ...(Boolean(dateFilter) && { filter: dateFilter, lang: "ru" }),
     });
 
     const totalPages = Math.max(Math.ceil(tasks.length / PAGE_SIZE), 1);
