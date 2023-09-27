@@ -9,6 +9,7 @@ import handleUtterance from "./helpers/handle-utterance";
 import greetKnownUser from "./helpers/greet-known-user";
 import greetNewUser from "./helpers/greet-new-user";
 import handleError from "./helpers/handle-error";
+import getApi from "./helpers/get-api";
 
 // TODO: добавить tts?
 const translation = {
@@ -64,6 +65,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       requestAuth(res, body);
       return;
     }
+
+    // TODO: remove
+    const api = getApi(body);
+    const tasks = await api.getTasks({
+      filter: "поиск: пойти на лыжи",
+      lang: "ru",
+    });
+    console.log("tasks:", tasks);
 
     // @ts-ignore
     if (body.account_linking_complete_event) {
