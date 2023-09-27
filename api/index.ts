@@ -63,11 +63,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // TODO: remove (it's for testing)
+    const filter = (
+      body.request.nlu?.intents?.["get_tasks"]?.slots?.["when"]?.value || ""
+    ).toString();
     const api = getApi(body);
     const tasks = await api.getTasks({
-      filter: (
-        body.request.nlu?.intents?.["get_tasks"]?.slots?.["when"]?.value || ""
-      ).toString(),
+      ...(Boolean(filter) && { filter }),
     });
     console.log("tasks:", tasks);
 
