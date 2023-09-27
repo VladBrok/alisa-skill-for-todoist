@@ -31,12 +31,12 @@ export default async function handleUtterance(
   }
 
   if (isGetTasks || isNextPage || isPrevPage) {
-    const filter = (
+    const dateFilter = (
       intents?.["get_tasks"]?.slots?.["when"]?.value || ""
     ).toString();
     const api = getApi(body);
     const tasks = await api.getTasks({
-      ...(Boolean(filter) && { filter, lang: "ru" }),
+      ...(Boolean(dateFilter) && { dateFilter, lang: "ru" }),
     });
 
     const totalPages = Math.max(Math.ceil(tasks.length / PAGE_SIZE), 1);
@@ -76,7 +76,9 @@ export default async function handleUtterance(
 
       responseText += t("close_task");
     } else {
-      responseText = t("all_tasks_done");
+      responseText = t("all_tasks_done", {
+        type: dateFilter ? "with_date" : "other",
+      });
     }
 
     responseTts = responseText
