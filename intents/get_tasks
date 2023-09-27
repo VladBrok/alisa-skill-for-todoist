@@ -1,10 +1,8 @@
 root:
-    ($Do ($Additonal)?)? $What
+    ($Do ($Additonal)?)? $What ($Preposition)? ($When)?
 slots:
-    what:
-        source: $What
-    do:
-        source: $Do
+    when:
+        source: $When
 $Do:
     %lemma
     покажи | все | какой | перечисли | список | мои
@@ -14,3 +12,9 @@ $Additonal:
 $What:
     %lemma
     задача | дело | таска | список
+$Preposition:
+    %lemma
+    на | до | срок | в
+$When:
+    %lemma
+    сегодня | завтра | понедельник | вторник | среда | четверг | пятница | суббота | воскресенье
