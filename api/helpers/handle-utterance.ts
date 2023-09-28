@@ -164,7 +164,9 @@ export default async function handleUtterance(
         taskContent: formatTaskContent(task.content),
       });
     } else if (tasks.length === 0) {
-      // TODO
+      responseText = t("task_not_found", {
+        taskContent: formatTaskContent(content),
+      });
     } else {
       // TODO
     }
