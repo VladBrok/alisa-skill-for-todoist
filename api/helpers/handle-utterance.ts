@@ -16,6 +16,7 @@ export default async function handleUtterance(
   const isNextPage = intents?.["next_page"];
   const isPrevPage = intents?.["prev_page"];
   const isCreateTask = intents?.["create_task"];
+  const isCloseTask = intents?.["close_task"];
   let responseText = t("unhandle_utterance");
   let responseTts = "";
 
@@ -86,7 +87,7 @@ export default async function handleUtterance(
       .replaceAll("\n\n", " sil <[200]> ")
       .replaceAll("\n", " sil <[100]> ");
   } else if (isCreateTask) {
-    const slots = body.request.nlu?.intents?.["create_task"]?.slots;
+    const slots = intents?.["create_task"]?.slots;
     let content = slots?.["content"]?.value.toString() || "";
     let dueString = slots?.["dueString"]?.value.toString() || "";
 
@@ -142,6 +143,10 @@ export default async function handleUtterance(
         due: dueString ? dueString : "empty",
       });
     }
+  } else if (isCloseTask) {
+    const slots = intents?.["close_task"]?.slots;
+    const taskName = slots?.["taskName"]?.value.toString() || "";
+    console.log("taskName:", taskName);
   }
 
   const answer: ResBody = {
