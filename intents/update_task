@@ -1,0 +1,24 @@
+root:
+    $Do $What $Task $Old $Preposition $New 
+slots:
+    old:
+        source: $Old
+    new:
+        source: $New
+$Do:
+    %lemma
+    поменяй | обнови | измени
+$What:
+    %lemma
+    название | текст | имя
+$Task:
+    %lemma
+    задача | таска | дело | миссия
+$Old:
+    .+
+$Preposition:
+    %lemma
+    на
+$New:
+    .+
+    
