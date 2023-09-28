@@ -1,0 +1,17 @@
+root:
+    $What ($Target)? $TaskName ($Additional)?
+slots:
+    taskName:
+        source: $TaskName
+$What:
+    %lemma
+    закрой | задача | таска | дело | миссия
+$Target:
+    %lemma
+    задача | таска | дело | миссия
+$TaskName:
+    .+
+$Additional:
+    %lemma
+    выполнена | сделана | завершена
+    
