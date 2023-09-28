@@ -1,5 +1,5 @@
 root:
-    $Action ($Target)? $Content ($DueSeparator)? $DueString
+    $Action $Target $Content ($DueSeparator)? ($DueString)?
 slots:
     content:
         source: $Content

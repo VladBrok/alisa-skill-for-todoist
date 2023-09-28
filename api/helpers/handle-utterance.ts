@@ -139,8 +139,7 @@ export default async function handleUtterance(
 
       responseText = t("task_created", {
         taskContent: formatTaskContent(content),
-        // не знаю, как корректнее это сделать, т.к. ICU в select не поддерживает undefined или что-то подобное
-        due: dueString ? dueString : "empty",
+        due: dueString || "empty",
       });
     }
   } else if (isCloseTask) {
