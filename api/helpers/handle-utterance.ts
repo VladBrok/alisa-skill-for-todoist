@@ -4,6 +4,8 @@ import { t } from "i18next";
 import end from "./end-response";
 import getApi from "./get-api";
 import formatTaskContent from "../../utils/format-task-content";
+import formatTaskList from "../../utils/format-task-list";
+import applyTts from "../../utils/apply-tts";
 
 const PAGE_SIZE = 10;
 
@@ -54,11 +56,7 @@ export default async function handleUtterance(
     }
 
     if (tasksInPage.length) {
-      const taskList = tasksInPage
-        .map((task) => formatTaskContent(task.content))
-        .join("\n\n");
-
-      responseText = `${taskList}\n\n\n`;
+      responseText = formatTaskList(tasksInPage);
 
       if (totalPages > 1) {
         let pageFooter =
@@ -82,10 +80,7 @@ export default async function handleUtterance(
       });
     }
 
-    responseTts = responseText
-      .replaceAll("\n\n\n", " sil <[400]> ")
-      .replaceAll("\n\n", " sil <[200]> ")
-      .replaceAll("\n", " sil <[100]> ");
+    responseTts = applyTts(responseText);
   } else if (isCreateTask) {
     const slots = intents?.["create_task"]?.slots;
     let content = slots?.["content"]?.value.toString() || "";
@@ -168,7 +163,11 @@ export default async function handleUtterance(
         taskContent: formatTaskContent(content),
       });
     } else {
-      // TODO
+      const formatted = formatTaskList(tasks);
+      responseText = t("multiple_tasks_found", {
+        tasks: formatted,
+      });
+      responseTts = applyTts(responseText);
     }
   }
 
