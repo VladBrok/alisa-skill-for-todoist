@@ -9,9 +9,9 @@ import handleUtterance from "./helpers/handle-utterance";
 import greetKnownUser from "./helpers/greet-known-user";
 import greetNewUser from "./helpers/greet-new-user";
 import handleError from "./helpers/handle-error";
-import getApi from "./helpers/get-api";
 
 // TODO: добавить tts?
+// TODO: add randomness
 const translation = {
   greet_new_user: `Добро пожаловать!\nВ навыке Вы можете управлять своими задачами Todoist.\nСкажите "задачи", чтобы узнать список открытых задач.`,
 
@@ -30,6 +30,8 @@ const translation = {
   unhandle_utterance: `Извините, не поняла Вас.\nСкажите "что ты умеешь" для просмотра возможных действий`,
 
   task_created: `Задача "{taskContent}" создана. {due, select, empty{} other{Срок: {due}}}`,
+
+  task_closed: `Задача "{taskContent}" выполнена. Так держать!\nСоздайте новую задачу, сказав, например: "Создай задачу вынести мусор срок сегодня"`,
 
   current_page: `Страница {page} из {totalPages}.`,
 
@@ -65,14 +67,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       requestAuth(res, body);
       return;
     }
-
-    // TODO: remove
-    const api = getApi(body);
-    const tasks = await api.getTasks({
-      filter: "поиск: на",
-      lang: "ru",
-    });
-    console.log("found tasks:", tasks);
 
     // @ts-ignore
     if (body.account_linking_complete_event) {

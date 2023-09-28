@@ -145,8 +145,30 @@ export default async function handleUtterance(
     }
   } else if (isCloseTask) {
     const slots = intents?.["close_task"]?.slots;
-    const taskName = slots?.["taskName"]?.value.toString() || "";
-    console.log("taskName:", taskName);
+    const content = slots?.["taskName"]?.value.toString() || "";
+
+    const api = getApi(body);
+    const tasks = await api.getTasks({
+      filter: `поиск: ${content}`,
+      lang: "ru",
+    });
+
+    if (tasks.length === 1) {
+      const task = tasks[0]!;
+      const closed = await api.closeTask(task.id);
+
+      if (!closed) {
+        throw new Error(`Todoist API returned false from closeTask endpoint.`);
+      }
+
+      responseText = t("task_closed", {
+        taskContent: formatTaskContent(task.content),
+      });
+    } else if (tasks.length === 0) {
+      // TODO
+    } else {
+      // TODO
+    }
   }
 
   const answer: ResBody = {
