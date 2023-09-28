@@ -19,6 +19,7 @@ export default async function handleUtterance(
   const isPrevPage = intents?.["prev_page"];
   const isCreateTask = intents?.["create_task"];
   const isCloseTask = intents?.["close_task"];
+  const isUpdateTask = intents?.["update_task"];
   let responseText = t("unhandle_utterance");
   let responseTts = "";
 
@@ -161,6 +162,44 @@ export default async function handleUtterance(
     } else if (tasks.length === 0) {
       responseText = t("task_not_found", {
         taskContent: formatTaskContent(content),
+      });
+    } else {
+      const formatted = formatTaskList(tasks);
+      responseText = t("multiple_tasks_found", {
+        tasks: formatted,
+      });
+      responseTts = applyTts(responseText);
+    }
+  } else if (isUpdateTask) {
+    // TODO: duplicate logic with `isCloseTask`
+
+    const slots = intents?.["update_task"]?.slots;
+    const oldContent = slots?.["old"]?.value.toString() || "";
+    const newContent = slots?.["new"]?.value.toString() || "";
+
+    const api = getApi(body);
+    const tasks = await api.getTasks({
+      filter: `поиск: ${oldContent}`,
+      lang: "ru",
+    });
+
+    if (tasks.length === 1) {
+      const task = tasks[0]!;
+      const updated = await api.updateTask(task.id, {
+        content: newContent,
+      });
+
+      if (!updated) {
+        throw new Error(`Todoist API returned false from updateTask endpoint.`);
+      }
+
+      responseText = t("task_updated", {
+        oldContent: formatTaskContent(task.content),
+        newContent: formatTaskContent(newContent),
+      });
+    } else if (tasks.length === 0) {
+      responseText = t("task_not_found", {
+        taskContent: formatTaskContent(oldContent),
       });
     } else {
       const formatted = formatTaskList(tasks);
