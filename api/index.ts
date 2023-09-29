@@ -51,6 +51,7 @@ const translation = {
 async function cors(fn: any) {
   return async (req: VercelRequest, res: VercelResponse) => {
     res.setHeader("Access-Control-Allow-Methods", "POST");
+    res.setHeader("Access-Control-Allow-Origin", "https://github.com/");
     return await fn(req, res);
   };
 }
