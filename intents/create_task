@@ -16,4 +16,6 @@ $Content:
 $DueSeparator:
     на
 $DueString:
-    .+
+    .+ 
+    %negative
+    .*на.*

@@ -6,6 +6,7 @@ import getApi from "./get-api";
 import formatTaskContent from "../../utils/format-task-content";
 import formatTaskList from "../../utils/format-task-list";
 import applyTts from "../../utils/apply-tts";
+import assert from "assert";
 
 const PAGE_SIZE = 10;
 
@@ -109,12 +110,12 @@ export default async function handleUtterance(
     const dueSeparatorsCount =
       body.request.nlu?.tokens.filter((x) => x === "на").length || 0;
     const hasDueSeparator = dueSeparatorsCount > 0;
+    console.log("hasDueSeparator:", hasDueSeparator); // TODO: remove
     if (!hasDueSeparator) {
-      content += ` ${dueString}`;
-      dueString = "";
-    }
-    if (dueSeparatorsCount > 1) {
-      content += " на";
+      assert(
+        !dueString,
+        "Expected dueString to be empty when dueSeparator is not specified"
+      );
     }
 
     if (content) {
@@ -133,9 +134,7 @@ export default async function handleUtterance(
             .toLowerCase()
             .includes("invalid date format")
         ) {
-          content += `${
-            hasDueSeparator && !content.includes("на") ? " на" : ""
-          } ${dueString}`;
+          content += `${hasDueSeparator ? " на" : ""} ${dueString}`;
           dueString = "";
           await api.addTask({
             content,
