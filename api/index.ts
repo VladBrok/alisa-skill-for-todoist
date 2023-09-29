@@ -52,11 +52,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const body = req?.body as ReqBody;
 
   console.log(
-    "request headers:",
-    req.headers,
+    "request headers origin:",
+    req.headers.origin,
     "response headers:",
-    res.getHeaders()
-  ); // TODO: remove 
+    JSON.stringify(res.getHeaders())
+  ); // TODO: remove
 
   try {
     await i18next.use(ICU).init({
