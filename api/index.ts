@@ -48,14 +48,6 @@ const translation = {
   close_task: `Для закрытия задачи, скажите "закрой задачу" и её название`,
 };
 
-async function cors(fn: any) {
-  return async (req: VercelRequest, res: VercelResponse) => {
-    res.setHeader("Access-Control-Allow-Methods", "POST");
-    res.setHeader("Access-Control-Allow-Origin", "https://github.com/");
-    return await fn(req, res);
-  };
-}
-
 async function handler(req: VercelRequest, res: VercelResponse) {
   const body = req?.body as ReqBody;
 
@@ -106,4 +98,4 @@ async function handler(req: VercelRequest, res: VercelResponse) {
   }
 }
 
-export default cors(handler);
+export default handler;
