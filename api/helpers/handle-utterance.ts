@@ -7,7 +7,7 @@ import formatTaskContent from "../../utils/format-task-content";
 import formatTaskList from "../../utils/format-task-list";
 import applyTts from "../../utils/apply-tts";
 
-const PAGE_SIZE = 2; // TODO: set to 10
+const PAGE_SIZE = 10;
 
 export default async function handleUtterance(
   res: VercelResponse,
@@ -99,24 +99,22 @@ export default async function handleUtterance(
     let content = slots?.["content"]?.value.toString() || "";
     let dueString = slots?.["dueString"]?.value.toString() || "";
 
-    // TODO: replace "срок" with "на"
-
     /**  
       Todoist API is not able to extract date from string like "помыть окно завтра",
       it requires to explicitly set `dueString`. Because of this, we use `dueSeparator`
       to distinguish between the task content and the task date.
-      If the user hasn't specified the `dueSeparator` (word "срок"),
+      If the user hasn't specified the `dueSeparator` (word "на"),
       we assume that both `content` and `dueString` have the task `content`, and `dueString` is not specified in this case.
     */
     const dueSeparatorsCount =
-      body.request.nlu?.tokens.filter((x) => x === "срок").length || 0;
+      body.request.nlu?.tokens.filter((x) => x === "на").length || 0;
     const hasDueSeparator = dueSeparatorsCount > 0;
     if (!hasDueSeparator) {
       content += ` ${dueString}`;
       dueString = "";
     }
     if (dueSeparatorsCount > 1) {
-      content += " срок";
+      content += " на";
     }
 
     if (content) {
@@ -136,7 +134,7 @@ export default async function handleUtterance(
             .includes("invalid date format")
         ) {
           content += `${
-            hasDueSeparator && !content.includes("срок") ? " срок" : ""
+            hasDueSeparator && !content.includes("на") ? " на" : ""
           } ${dueString}`;
           dueString = "";
           await api.addTask({
