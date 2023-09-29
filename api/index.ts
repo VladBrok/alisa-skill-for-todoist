@@ -56,7 +56,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     req.headers,
     "response headers:",
     res.getHeaders()
-  ); // TODO: remove
+  ); // TODO: remove 
 
   try {
     await i18next.use(ICU).init({
