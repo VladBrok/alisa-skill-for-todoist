@@ -1,17 +1,13 @@
 root:
-    $What ($Target)? $TaskName ($Additional)?
+    $Do ($Target)? $TaskName
 slots:
     taskName:
         source: $TaskName
-$What:
+$Do:
     %lemma
-    закрой | задача | таска | дело | миссия
+    закрыть | закрой | выполни
 $Target:
     %lemma
     задача | таска | дело | миссия
 $TaskName:
     .+
-$Additional:
-    %lemma
-    выполнена | сделана | завершена
-    
