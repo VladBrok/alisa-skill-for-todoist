@@ -49,14 +49,12 @@ const translation = {
 };
 
 async function handler(req: VercelRequest, res: VercelResponse) {
-  const body = req?.body as ReqBody;
+  if (req.method !== "POST") {
+    res.statusCode = 405;
+    res.end();
+  }
 
-  console.log(
-    "request headers origin:",
-    req.headers.origin,
-    "response headers:",
-    JSON.stringify(res.getHeaders())
-  ); // TODO: remove
+  const body = req?.body as ReqBody;
 
   try {
     await i18next.use(ICU).init({
