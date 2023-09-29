@@ -20,6 +20,7 @@ export default async function handleUtterance(
   const isCreateTask = intents?.["create_task"];
   const isCloseTask = intents?.["close_task"];
   const isUpdateTask = intents?.["update_task"];
+  const isGetExpired = intents?.["get_expired"];
   let responseText = t("unhandle_utterance");
   let responseTts = "";
 
@@ -34,13 +35,24 @@ export default async function handleUtterance(
     page--;
   }
 
-  if (isGetTasks || isNextPage || isPrevPage) {
-    const dateFilter = (
-      intents?.["get_tasks"]?.slots?.["when"]?.value || ""
-    ).toString();
+  const dateFilter = (
+    intents?.["get_tasks"]?.slots?.["when"]?.value || ""
+  ).toString();
+  const expirationFilter = isGetExpired ? "просрочено" : "";
+  const currentFilter = [dateFilter, expirationFilter]
+    .filter(Boolean)
+    .join(", ");
+  const savedFilter =
+    (isPrevPage || isNextPage) &&
+    typeof body?.state?.session?.["filter"] === "string"
+      ? body.state.session["filter"]
+      : "";
+  const filter = savedFilter || currentFilter;
+
+  if (isGetTasks || isGetExpired || isNextPage || isPrevPage) {
     const api = getApi(body);
     const tasks = await api.getTasks({
-      ...(Boolean(dateFilter) && { filter: dateFilter, lang: "ru" }),
+      ...(Boolean(filter) && { filter: filter, lang: "ru" }),
     });
 
     const totalPages = Math.max(Math.ceil(tasks.length / PAGE_SIZE), 1);
@@ -86,6 +98,8 @@ export default async function handleUtterance(
     const slots = intents?.["create_task"]?.slots;
     let content = slots?.["content"]?.value.toString() || "";
     let dueString = slots?.["dueString"]?.value.toString() || "";
+
+    // TODO: replace "срок" with "на"
 
     /**  
       Todoist API is not able to extract date from string like "помыть окно завтра",
@@ -172,6 +186,7 @@ export default async function handleUtterance(
     }
   } else if (isUpdateTask) {
     // TODO: duplicate logic with `isCloseTask`
+    // TODO: add pagination OR show only first PAGE_SIZE tasks and say "and 5 more" or smth
 
     const slots = intents?.["update_task"]?.slots;
     const oldContent = slots?.["old"]?.value.toString() || "";
@@ -219,6 +234,7 @@ export default async function handleUtterance(
     },
     session_state: {
       page,
+      filter,
     },
   };
   end(res, answer);
