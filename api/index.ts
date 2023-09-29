@@ -52,6 +52,7 @@ async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST") {
     res.statusCode = 405;
     res.end();
+    return;
   }
 
   const body = req?.body as ReqBody;
