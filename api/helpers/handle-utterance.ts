@@ -7,7 +7,7 @@ import formatTaskContent from "../../utils/format-task-content";
 import formatTaskList from "../../utils/format-task-list";
 import applyTts from "../../utils/apply-tts";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 2; // TODO: set to 10
 
 export default async function handleUtterance(
   res: VercelResponse,
