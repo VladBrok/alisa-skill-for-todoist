@@ -110,7 +110,6 @@ export default async function handleUtterance(
     const dueSeparatorsCount =
       body.request.nlu?.tokens.filter((x) => x === "на").length || 0;
     const hasDueSeparator = dueSeparatorsCount > 0;
-    console.log("hasDueSeparator:", hasDueSeparator); // TODO: remove
     if (!hasDueSeparator) {
       assert(
         !dueString,

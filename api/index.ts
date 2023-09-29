@@ -9,6 +9,7 @@ import handleUtterance from "./helpers/handle-utterance";
 import greetKnownUser from "./helpers/greet-known-user";
 import greetNewUser from "./helpers/greet-new-user";
 import handleError from "./helpers/handle-error";
+import assert from "assert";
 
 // TODO: добавить tts?
 // TODO: add randomness
@@ -58,6 +59,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       },
     },
   });
+
+  // TODO: remoe
+  assert(false, "oops hahahaha");
 
   const body = req.body as ReqBody;
 
