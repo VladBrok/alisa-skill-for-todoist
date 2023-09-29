@@ -1,7 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { ReqBody } from "alice-types";
-import i18next from "i18next";
-import ICU from "i18next-icu";
 
 import authNotSupported from "./helpers/auth-not-supported";
 import requestAuth from "./helpers/request-auth";
@@ -9,44 +7,7 @@ import handleUtterance from "./helpers/handle-utterance";
 import greetKnownUser from "./helpers/greet-known-user";
 import greetNewUser from "./helpers/greet-new-user";
 import handleError from "./helpers/handle-error";
-
-// TODO: добавить tts?
-// TODO: add randomness
-const translation = {
-  greet_new_user: `Добро пожаловать!\nВ навыке Вы можете управлять своими задачами Todoist.\nСкажите "задачи", чтобы узнать список открытых задач.`,
-
-  handle_error: `Ой, я не смогла обработать запрос.\nПожалуйста, повторите его, или скажите "что ты умеешь" для просмотра доступных действий`,
-
-  auth_not_supported: `Извините, эта поверхность не поддерживает авторизацию.\nПопробуйте запустить навык с телефона`,
-
-  greet_known_user: `{count, plural, =0{С возвращением!\nВсе задачи выполнены, так держать!\nСоздайте новую задачу, сказав, например: "Создай задачу постирать носки на завтра} other{С возвращением!\nУ Вас {count} {count, plural, one{невыполненная} other{невыполненных}} {count, plural, one{задача} few{задачи} other{задач}}.\nСкажите "задачи", чтобы узнать, {count, plural, one{какая} few{каких} other{каких}} именно.}}`,
-
-  all_tasks_done: `
-    {type, select,
-      with_date {Все задачи на указанный день выполнены. Так держать!\nСоздайте новую задачу, сказав, например: "Создай задачу постирать носки на завтра"}
-      other {Все задачи выполнены. Так держать!\nСоздайте новую задачу, сказав, например: "Создай задачу постирать носки на завтра"}
-    }`,
-
-  unhandle_utterance: `Извините, не поняла Вас.\nСкажите "что ты умеешь" для просмотра возможных действий`,
-
-  task_created: `Задача "{taskContent}" создана. {due, select, empty{} other{Срок: {due}}}`,
-
-  task_closed: `Задача "{taskContent}" выполнена. Так держать!\nСоздайте новую задачу, сказав, например: "Создай задачу вынести мусор на сегодня"`,
-
-  task_updated: `Название задачи "{oldContent}" изменено на "{newContent}".\nДля просмотра задач на сегодня, скажите "задачи на сегодня"`,
-
-  task_not_found: `Задача "{taskContent}" не найдена.\nПожалуйста, повторите запрос, уточнив название задачи, или скажите "все задачи"`,
-
-  multiple_tasks_found: `Найдено несколько задач:\n{tasks}Пожалуйста, повторите запрос, уточнив название задачи`,
-
-  current_page: `Страница {page} из {totalPages}.`,
-
-  next_page: `Для перехода на следующую, скажите "дальше"`,
-
-  prev_page: `Для перехода назад, скажите "назад"`,
-
-  close_task: `Для закрытия задачи, скажите "закрой задачу" и её название`,
-};
+import { initICU } from "./helpers/icu";
 
 async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST") {
@@ -58,15 +19,7 @@ async function handler(req: VercelRequest, res: VercelResponse) {
   const body = req?.body as ReqBody;
 
   try {
-    await i18next.use(ICU).init({
-      debug: false,
-      lng: "ru",
-      resources: {
-        ru: {
-          translation,
-        },
-      },
-    });
+    await initICU();
 
     const supportsAuth = Boolean(body.meta.interfaces.account_linking);
     if (!supportsAuth) {
