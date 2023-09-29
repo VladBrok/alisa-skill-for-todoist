@@ -49,6 +49,8 @@ const translation = {
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  res.setHeader("Access-Control-Allow-Methods", "POST");
+
   const body = req?.body as ReqBody;
 
   console.log(
