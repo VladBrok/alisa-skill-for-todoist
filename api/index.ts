@@ -9,7 +9,6 @@ import handleUtterance from "./helpers/handle-utterance";
 import greetKnownUser from "./helpers/greet-known-user";
 import greetNewUser from "./helpers/greet-new-user";
 import handleError from "./helpers/handle-error";
-import assert from "assert";
 
 // TODO: добавить tts?
 // TODO: add randomness
@@ -50,22 +49,19 @@ const translation = {
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  await i18next.use(ICU).init({
-    debug: true,
-    lng: "ru",
-    resources: {
-      ru: {
-        translation,
-      },
-    },
-  });
-
-  // TODO: remoe
-  assert(false, "oops hahahaha");
-
-  const body = req.body as ReqBody;
+  const body = req?.body as ReqBody;
 
   try {
+    await i18next.use(ICU).init({
+      debug: false,
+      lng: "ru",
+      resources: {
+        ru: {
+          translation,
+        },
+      },
+    });
+
     const supportsAuth = Boolean(body.meta.interfaces.account_linking);
     if (!supportsAuth) {
       authNotSupported(res, body);
