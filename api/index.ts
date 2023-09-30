@@ -39,7 +39,7 @@ async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     if (!body.request.original_utterance) {
-      greetKnownUser(res, body);
+      await greetKnownUser(res, body);
       return;
     }
 
