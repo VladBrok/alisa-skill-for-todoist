@@ -23,7 +23,6 @@ export default async function handleUtterance(
   const isUpdateTask = intents?.["update_task"];
   const isGetExpired = intents?.["get_expired"];
   const isHelp = intents?.["help"];
-  const isPing = body.request.original_utterance.trim() === "ping"; // https://yandex.ru/dev/dialogs/alice/doc/moderation.html#check-after-moderation
   let responseText = t("unhandle_utterance");
   let responseTts = "";
 
@@ -205,8 +204,6 @@ export default async function handleUtterance(
   } else if (isHelp) {
     responseText = t("help");
     responseTts = applyTts(responseText);
-  } else if (isPing) {
-    responseText = "pong";
   }
 
   const answer: ResBody = {
