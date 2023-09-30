@@ -10,6 +10,8 @@ import handleError from "./helpers/handle-error";
 import { initICU } from "./helpers/icu";
 
 async function handler(req: VercelRequest, res: VercelResponse) {
+  throw new Error("oops"); // TODO: remove
+
   if (req.method !== "POST") {
     res.statusCode = 405;
     res.end();
