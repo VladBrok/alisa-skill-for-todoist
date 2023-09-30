@@ -7,6 +7,7 @@ import formatTaskContent from "../../utils/format-task-content";
 import formatTaskList from "../../utils/format-task-list";
 import applyTts from "../../utils/apply-tts";
 import assert from "assert";
+import findTask from "./find-task";
 
 const PAGE_SIZE = 10;
 
@@ -152,73 +153,54 @@ export default async function handleUtterance(
     const slots = intents?.["close_task"]?.slots;
     const content = slots?.["taskName"]?.value.toString() || "";
 
-    const api = getApi(body);
-    const tasks = await api.getTasks({
-      filter: `поиск: ${content}`,
-      lang: "ru",
-    });
+    ({ responseText, responseTts } = await findTask(
+      content,
+      body,
+      async (task, api) => {
+        const closed = await api.closeTask(task.id);
 
-    if (tasks.length === 1) {
-      const task = tasks[0]!;
-      const closed = await api.closeTask(task.id);
+        if (!closed) {
+          throw new Error(
+            `Todoist API returned false from closeTask endpoint.`
+          );
+        }
 
-      if (!closed) {
-        throw new Error(`Todoist API returned false from closeTask endpoint.`);
+        return {
+          responseText: t("task_closed", {
+            taskContent: formatTaskContent(task.content),
+          }),
+          responseTts: "",
+        };
       }
-
-      responseText = t("task_closed", {
-        taskContent: formatTaskContent(task.content),
-      });
-    } else if (tasks.length === 0) {
-      responseText = t("task_not_found", {
-        taskContent: formatTaskContent(content),
-      });
-    } else {
-      const formatted = formatTaskList(tasks);
-      responseText = t("multiple_tasks_found", {
-        tasks: formatted,
-      });
-      responseTts = applyTts(responseText);
-    }
+    ));
   } else if (isUpdateTask) {
-    // TODO: duplicate logic with `isCloseTask`
-    // TODO: add pagination OR show only first PAGE_SIZE tasks and say "and 5 more" or smth
-
     const slots = intents?.["update_task"]?.slots;
     const oldContent = slots?.["old"]?.value.toString() || "";
     const newContent = slots?.["new"]?.value.toString() || "";
 
-    const api = getApi(body);
-    const tasks = await api.getTasks({
-      filter: `поиск: ${oldContent}`,
-      lang: "ru",
-    });
+    ({ responseText, responseTts } = await findTask(
+      oldContent,
+      body,
+      async (task, api) => {
+        const updated = await api.updateTask(task.id, {
+          content: newContent,
+        });
 
-    if (tasks.length === 1) {
-      const task = tasks[0]!;
-      const updated = await api.updateTask(task.id, {
-        content: newContent,
-      });
+        if (!updated) {
+          throw new Error(
+            `Todoist API returned false from updateTask endpoint.`
+          );
+        }
 
-      if (!updated) {
-        throw new Error(`Todoist API returned false from updateTask endpoint.`);
+        return {
+          responseText: t("task_updated", {
+            oldContent: formatTaskContent(task.content),
+            newContent: formatTaskContent(newContent),
+          }),
+          responseTts: "", // TODO: maybe always apply tts
+        };
       }
-
-      responseText = t("task_updated", {
-        oldContent: formatTaskContent(task.content),
-        newContent: formatTaskContent(newContent),
-      });
-    } else if (tasks.length === 0) {
-      responseText = t("task_not_found", {
-        taskContent: formatTaskContent(oldContent),
-      });
-    } else {
-      const formatted = formatTaskList(tasks);
-      responseText = t("multiple_tasks_found", {
-        tasks: formatted,
-      });
-      responseTts = applyTts(responseText);
-    }
+    ));
   }
 
   const answer: ResBody = {

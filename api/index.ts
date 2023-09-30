@@ -17,7 +17,6 @@ async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const body = req?.body as ReqBody;
-
   try {
     await initICU();
 
