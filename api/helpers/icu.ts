@@ -1,10 +1,11 @@
 import i18next from "i18next";
 import ICU from "i18next-icu";
+import { ERROR_RESPONSE } from "../../constants";
 
 const translation = {
   greet_new_user: `Добро пожаловать!\nВ навыке Вы можете управлять своими задачами Todoist.\nСкажите "задачи", чтобы узнать список открытых задач.`,
 
-  handle_error: `Ой, я не смогла обработать запрос.\nПожалуйста, повторите его, или скажите "что ты умеешь" для просмотра доступных действий`,
+  handle_error: ERROR_RESPONSE,
 
   auth_not_supported: `Извините, эта поверхность не поддерживает авторизацию.\nПопробуйте запустить навык с телефона`,
 
