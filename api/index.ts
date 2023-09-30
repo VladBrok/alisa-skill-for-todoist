@@ -18,10 +18,6 @@ async function handler(req: VercelRequest, res: VercelResponse) {
 
   const body = req?.body as ReqBody;
   try {
-    // TODO: remove
-    console.log("wow omg");
-    throw new Error("oops");
-
     await initICU();
 
     const supportsAuth = Boolean(body.meta.interfaces.account_linking);
