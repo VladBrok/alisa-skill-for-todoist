@@ -22,6 +22,7 @@ export default async function handleUtterance(
   const isCloseTask = intents?.["close_task"];
   const isUpdateTask = intents?.["update_task"];
   const isGetExpired = intents?.["get_expired"];
+  const isHelp = intents?.["help"];
   let responseText = t("unhandle_utterance");
   let responseTts = "";
 
@@ -200,6 +201,9 @@ export default async function handleUtterance(
         };
       }
     ));
+  } else if (isHelp) {
+    responseText = t("help");
+    responseTts = applyTts(responseText);
   }
 
   const answer: ResBody = {
