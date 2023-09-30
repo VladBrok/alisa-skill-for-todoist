@@ -1,0 +1,13 @@
+root:
+    $Do ($Target)? $TaskName
+slots:
+    taskName:
+        source: $TaskName
+$Do:
+    %lemma
+    закрыть | закрой | выполни
+$Target:
+    %lemma
+    задача | таска | дело | миссия
+$TaskName:
+    .+

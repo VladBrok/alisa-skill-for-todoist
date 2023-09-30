@@ -1,0 +1,13 @@
+root:
+    $Action ($Target)?
+slots:
+    action:
+        source: $Action
+    target:
+        source: $Target
+$Action:
+    %lemma
+    назад | предыдущая | обратно
+$Target:
+    %lemma
+    страница

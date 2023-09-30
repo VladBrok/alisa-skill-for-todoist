@@ -1,0 +1,9 @@
+root:
+    $Query ($What)?
+slots:
+$Query:
+    %lemma
+    покажи просроченные | просроченные
+$What:
+    %lemma
+    задача | дело | таска

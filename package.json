@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "@doist/todoist-api-typescript": "^2.1.2",
+    "dotenv": "^16.3.1",
+    "i18next": "^23.5.1",
+    "i18next-icu": "^2.3.0",
+    "intl-messageformat": "^10.5.2",
+    "remove-markdown": "^0.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.9",
+    "@types/remove-markdown": "^0.3.1",
+    "@typescript-eslint/eslint-plugin": "^6.6.0",
+    "@typescript-eslint/parser": "^6.6.0",
+    "@vercel/node": "^3.0.3",
+    "alice-types": "^1.3.0",
+    "eslint": "^8.49.0"
+  }
+}
