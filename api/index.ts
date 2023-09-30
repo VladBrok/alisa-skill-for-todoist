@@ -20,7 +20,7 @@ async function handler(req: VercelRequest, res: VercelResponse) {
   const body = req?.body as ReqBody;
   try {
     // https://yandex.ru/dev/dialogs/alice/doc/moderation.html#check-after-moderation
-    const isPing = body.request.original_utterance.trim() === "ping";
+    const isPing = body?.request?.original_utterance?.trim() === "ping";
     if (isPing) {
       end(res, {
         version: body.version,
@@ -52,7 +52,7 @@ async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
 
-    if (!body.request.original_utterance) {
+    if (!body.request?.original_utterance) {
       await greetKnownUser(res, body);
       return;
     }
