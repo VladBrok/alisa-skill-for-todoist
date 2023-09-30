@@ -10,8 +10,6 @@ import handleError from "./helpers/handle-error";
 import { initICU } from "./helpers/icu";
 
 async function handler(req: VercelRequest, res: VercelResponse) {
-  throw new Error("oops"); // TODO: remove
-
   if (req.method !== "POST") {
     res.statusCode = 405;
     res.end();
@@ -20,6 +18,7 @@ async function handler(req: VercelRequest, res: VercelResponse) {
 
   const body = req?.body as ReqBody;
   try {
+    throw new Error("oops"); // TODO: remove
     await initICU();
 
     const supportsAuth = Boolean(body.meta.interfaces.account_linking);
