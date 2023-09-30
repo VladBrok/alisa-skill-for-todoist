@@ -197,7 +197,7 @@ export default async function handleUtterance(
             oldContent: formatTaskContent(task.content),
             newContent: formatTaskContent(newContent),
           }),
-          responseTts: "", // TODO: maybe always apply tts
+          responseTts: "",
         };
       }
     ));

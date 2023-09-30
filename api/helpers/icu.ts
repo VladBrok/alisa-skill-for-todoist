@@ -1,7 +1,6 @@
 import i18next from "i18next";
 import ICU from "i18next-icu";
 
-// TODO: добавить tts?
 const translation = {
   greet_new_user: `Добро пожаловать!\nВ навыке Вы можете управлять своими задачами Todoist.\nСкажите "задачи", чтобы узнать список открытых задач.`,
 
