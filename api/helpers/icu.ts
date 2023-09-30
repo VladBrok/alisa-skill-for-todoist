@@ -3,7 +3,7 @@ import ICU from "i18next-icu";
 import { ERROR_RESPONSE } from "../../constants";
 
 const translation = {
-  greet_new_user: `Добро пожаловать!\nВ навыке Вы можете управлять своими задачами Todoist.\nСкажите "задачи", чтобы узнать список открытых задач.`,
+  greet_new_user: `Добро пожаловать!\nВ навыке Вы можете управлять своими задачами Todoist.\nСкажите "задачи", чтобы узнать список открытых задач.\nСкажите "помощь" для просмотра подробной информации.`,
 
   handle_error: ERROR_RESPONSE,
 
