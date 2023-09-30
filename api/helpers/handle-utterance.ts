@@ -8,8 +8,7 @@ import formatTaskList from "../../utils/format-task-list";
 import applyTts from "../../utils/apply-tts";
 import assert from "assert";
 import findTask from "./find-task";
-
-const PAGE_SIZE = 10;
+import { PAGE_SIZE } from "../../constants";
 
 export default async function handleUtterance(
   res: VercelResponse,
