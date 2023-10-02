@@ -8,7 +8,8 @@ import greetKnownUser from "./helpers/greet-known-user";
 import greetNewUser from "./helpers/greet-new-user";
 import handleError from "./helpers/handle-error";
 import { initICU } from "./helpers/icu";
-import end from "./helpers/end-response";
+import { pong } from "./helpers/pong";
+import help from "./helpers/help";
 
 async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST") {
@@ -22,17 +23,17 @@ async function handler(req: VercelRequest, res: VercelResponse) {
     // https://yandex.ru/dev/dialogs/alice/doc/moderation.html#check-after-moderation
     const isPing = body?.request?.original_utterance?.trim() === "ping";
     if (isPing) {
-      end(res, {
-        version: body.version,
-        response: {
-          text: "pong",
-          end_session: false,
-        },
-      });
+      pong(res, body);
       return;
     }
 
     await initICU();
+
+    const isHelp = body?.request?.nlu?.intents?.["help"];
+    if (isHelp) {
+      help(res, body);
+      return;
+    }
 
     const supportsAuth = Boolean(body.meta.interfaces.account_linking);
     if (!supportsAuth) {
