@@ -1,15 +1,15 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { ReqBody } from "alice-types";
 
-import authNotSupported from "./helpers/auth-not-supported";
-import requestAuth from "./helpers/request-auth";
-import handleUtterance from "./helpers/handle-utterance";
-import greetKnownUser from "./helpers/greet-known-user";
-import greetNewUser from "./helpers/greet-new-user";
-import handleError from "./helpers/handle-error";
-import { initICU } from "./helpers/icu";
-import { pong } from "./helpers/pong";
-import help from "./helpers/help";
+import authNotSupported from "../utils/api-helpers/auth-not-supported";
+import requestAuth from "../utils/api-helpers/request-auth";
+import handleUtterance from "../utils/api-helpers/handle-utterance";
+import greetKnownUser from "../utils/api-helpers/greet-known-user";
+import greetNewUser from "../utils/api-helpers/greet-new-user";
+import handleError from "../utils/api-helpers/handle-error";
+import { initICU } from "../utils/api-helpers/icu";
+import { pong } from "../utils/api-helpers/pong";
+import help from "../utils/api-helpers/help";
 
 async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST") {
